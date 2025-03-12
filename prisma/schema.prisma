@@ -13,15 +13,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id         String @id @default(uuid()) @db.Uuid
-  email      String @unique
-  hash       String @map("password_hash")
-  role       Role   @default(USER)
-  first_name String
-  last_name  String
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  profile   Profile?
 
   @@map("users")
+}
+
+model Profile {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @unique @map("user_id") @db.Uuid
+  user           User     @relation(fields: [userId], references: [id])
+  phoneNumber    BigInt   @map("phone_number")
+  avatar         String   @unique @db.Uuid
+  friends        String[]
+  files          String[]
+  subscriptions  String[]
+  savedPeople    String[] @map("saved_people")
+  savedEvents    String[] @map("saved_events")
+  selectedEvents String[] @map("selected_events")
+
+  @@map("profiles")
 }
 
 enum Role {
