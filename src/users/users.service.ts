@@ -5,6 +5,7 @@ import {Role} from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import {UpdateUserDto} from "./dto/update-user.dto";
 import {UserEntity} from "./entity/user.entity";
+import {UserByEmailEntity} from "./entity/user-by-email.entity";
 
 export const roundsOfHashing = 10;
 
@@ -20,7 +21,7 @@ export class UsersService {
 
 		dto.password = hashedPassword;
 		if (role) {
-			createdUser = await this.prismaService.user.create({ data: { ...dto }, omit: this.omitUser });
+			createdUser = await this.prismaService.user.create({ data: { ...dto, role }, omit: this.omitUser });
 		} else {
 			createdUser = await this.prismaService.user.create({ data: dto, omit: this.omitUser });
 		}
@@ -32,8 +33,8 @@ export class UsersService {
 		return this.prismaService.user.findMany({ omit: this.omitUser });
 	}
 
-	findByEmail(email: string): Promise<UserEntity | null> {
-		return this.prismaService.user.findUnique({ where: { email }, omit: this.omitUser })
+	findByEmail(email: string): Promise<UserByEmailEntity | null> {
+		return this.prismaService.user.findUnique({ where: { email }, omit: { createdAt: true, updatedAt: true } })
 	}
 
 	findById(id: string): Promise<UserEntity | null> {
