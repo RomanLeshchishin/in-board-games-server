@@ -6,6 +6,10 @@ import {RegisterDto} from "./dto/register.dto";
 import {Role} from "@prisma/client";
 import {LoginDto} from "./dto/login.dto";
 import * as bcrypt from "bcrypt";
+import {JwtService} from "@nestjs/jwt";
+import {AuthEntity} from "./entity/auth.entity";
+import {TokenEntity} from "./entity/token.entity";
+import {Response} from "express";
 
 @Injectable()
 export class AuthService {
@@ -13,20 +17,26 @@ export class AuthService {
 	constructor(
 		private prismaService: PrismaService,
 		private configService: ConfigService,
+		private jwtService: JwtService,
 		private userService: UsersService,
 	) {}
 
-	async register(dto: RegisterDto, role: Role) {
+	async register(dto: RegisterDto, role: Role, res: Response): Promise<AuthEntity> {
 		const candidate = await this.userService.findByEmail(dto.email)
 
 		if (candidate) {
 			throw new HttpException(`Пользователь с email ${dto.email} уже существует`, HttpStatus.BAD_REQUEST)
 		}
 
-		const createdUser = await this.userService.create(dto, role)
+		const user = await this.userService.create(dto, role)
+		const tokens = await this.generateTokens(user.id)
+
+		this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
+		console.log(tokens.refreshToken)
+		return { user, accessToken: tokens.accessToken }
 	}
 
-	async login(dto: LoginDto) {
+	async login(dto: LoginDto, res: Response): Promise<AuthEntity> {//проверить что возвращает user
 		const user = await this.userService.findByEmail(dto.email)
 
 		if (!user) {
@@ -37,5 +47,54 @@ export class AuthService {
 		if (!passwordEquals) {
 			throw new UnauthorizedException({message: 'Неправильный пароль или email'})
 		}
+
+		const tokens = await this.generateTokens(user.id)
+
+		this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
+		console.log(tokens.refreshToken)
+		return { user, accessToken: tokens.accessToken }
+	}
+
+	async refreshAccessToken(refreshToken: string, res: Response): Promise<Omit<TokenEntity, "refreshToken">> {
+		try {
+			const payload = this.jwtService.verify(refreshToken)
+			const tokens = await this.generateTokens(payload)
+
+			this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
+
+			return { accessToken: tokens.accessToken };
+		} catch (error) {
+			throw new UnauthorizedException();
+		}
+	}
+
+	private async generateTokens(userId: string): Promise<TokenEntity> {
+		const accessToken = this.jwtService.sign(
+			{ userId },
+			{
+				secret: this.configService.getOrThrow("JWT_ACCESS_SECRET"),
+				expiresIn: '4h',
+			},
+		);
+
+		const refreshToken = this.jwtService.sign(
+			{ userId },
+			{
+				secret: this.configService.getOrThrow("JWT_REFRESH_SECRET"),
+				expiresIn: '7d',
+			},
+		);
+
+		return { accessToken, refreshToken }
+	}
+
+	private setRefreshToCookie(title: string, value: string, res: Response) {
+		res.cookie(title, value, {
+			httpOnly: true,
+			secure: false,
+			sameSite: 'strict',
+			maxAge: 7 * 24 * 60 * 60 * 1000, //7d
+			path: '/',
+		});
 	}
 }

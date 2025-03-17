@@ -41,7 +41,7 @@ export class UsersService {
 		return this.prismaService.user.findUnique({ where: { id }, omit: this.omitUser })
 	}
 
-	async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
+	async update(id: string, dto: Partial<UpdateUserDto>): Promise<UserEntity> {
 		return this.prismaService.user.update({ where: { id }, data: dto, omit: this.omitUser })
 	}
 }

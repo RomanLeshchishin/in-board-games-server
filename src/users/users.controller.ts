@@ -23,7 +23,7 @@ export class UsersController {
 		return this.usersService.findAll();
 	}
 
-	@Get('/:email')
+	@Get('email/:email')
 	@ApiOkResponse({ type: UserEntity })
 	getByEmail(@Param('email') email: string) {
 		return this.usersService.findByEmail(email);
