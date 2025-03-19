@@ -11,10 +11,13 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
 	constructor(private usersService: UsersService, private configService: ConfigService) {
 		super({
 			jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
-				return request?.cookies?.refreshToken;
+				const cookies = request.headers.cookie;
+				if (cookies) {
+					return cookies.split('=')[1].trim();
+				}
+				return null;
 			}]),
 			secretOrKey: configService.getOrThrow('JWT_REFRESH_SECRET'),
-			passReqToCallback: true,
 		});
 	}
 

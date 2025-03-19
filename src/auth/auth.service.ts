@@ -10,6 +10,7 @@ import {JwtService} from "@nestjs/jwt";
 import {AuthEntity} from "./entity/auth.entity";
 import {TokenEntity} from "./entity/token.entity";
 import {Response} from "express";
+import {UserEntity} from "../users/entity/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -32,11 +33,11 @@ export class AuthService {
 		const tokens = await this.generateTokens(user.id)
 
 		this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
-		console.log(tokens.refreshToken)
+
 		return { user, accessToken: tokens.accessToken }
 	}
 
-	async login(dto: LoginDto, res: Response): Promise<AuthEntity> {//проверить что возвращает user
+	async login(dto: LoginDto, res: Response): Promise<AuthEntity> {//user возвращается вместе с хэшированным паролем
 		const user = await this.userService.findByEmail(dto.email)
 
 		if (!user) {
@@ -51,13 +52,21 @@ export class AuthService {
 		const tokens = await this.generateTokens(user.id)
 
 		this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
-		console.log(tokens.refreshToken)
-		return { user, accessToken: tokens.accessToken }
+
+		const userResponse: UserEntity = {
+			id: user.id,
+			email: user.email,
+			role: user.role,
+			firstName: user.firstName,
+			lastName: user.lastName
+		}
+
+		return { user: userResponse, accessToken: tokens.accessToken }
 	}
 
 	async refreshAccessToken(refreshToken: string, res: Response): Promise<Omit<TokenEntity, "refreshToken">> {
 		try {
-			const payload = this.jwtService.verify(refreshToken)
+			const payload = this.jwtService.verify(refreshToken, { secret: this.configService.getOrThrow("JWT_REFRESH_SECRET") })
 			const tokens = await this.generateTokens(payload)
 
 			this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
