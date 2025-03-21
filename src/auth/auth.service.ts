@@ -30,14 +30,14 @@ export class AuthService {
 		}
 
 		const user = await this.userService.create(dto, role)
-		const tokens = await this.generateTokens(user.id)
+		const tokens = await this.generateTokens(user.id, user.role)
 
 		this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
 
 		return { user, accessToken: tokens.accessToken }
 	}
 
-	async login(dto: LoginDto, res: Response): Promise<AuthEntity> {//user возвращается вместе с хэшированным паролем
+	async login(dto: LoginDto, res: Response): Promise<AuthEntity> {
 		const user = await this.userService.findByEmail(dto.email)
 
 		if (!user) {
@@ -49,7 +49,7 @@ export class AuthService {
 			throw new UnauthorizedException({message: 'Неправильный пароль или email'})
 		}
 
-		const tokens = await this.generateTokens(user.id)
+		const tokens = await this.generateTokens(user.id, user.role)
 
 		this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
 
@@ -67,7 +67,7 @@ export class AuthService {
 	async refreshAccessToken(refreshToken: string, res: Response): Promise<Omit<TokenEntity, "refreshToken">> {
 		try {
 			const payload = this.jwtService.verify(refreshToken, { secret: this.configService.getOrThrow("JWT_REFRESH_SECRET") })
-			const tokens = await this.generateTokens(payload)
+			const tokens = await this.generateTokens(payload.userId, payload.role)
 
 			this.setRefreshToCookie('refreshToken', tokens.refreshToken, res)
 
@@ -77,9 +77,9 @@ export class AuthService {
 		}
 	}
 
-	private async generateTokens(userId: string): Promise<TokenEntity> {
+	private async generateTokens(userId: string, role: Role): Promise<TokenEntity> {
 		const accessToken = this.jwtService.sign(
-			{ userId },
+			{ userId, role },
 			{
 				secret: this.configService.getOrThrow("JWT_ACCESS_SECRET"),
 				expiresIn: '4h',
@@ -87,7 +87,7 @@ export class AuthService {
 		);
 
 		const refreshToken = this.jwtService.sign(
-			{ userId },
+			{ userId, role },
 			{
 				secret: this.configService.getOrThrow("JWT_REFRESH_SECRET"),
 				expiresIn: '7d',

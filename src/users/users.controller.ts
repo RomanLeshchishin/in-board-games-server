@@ -6,6 +6,8 @@ import {UpdateUserDto} from "./dto/update-user.dto";
 import {ApiCreatedResponse, ApiOkResponse} from "@nestjs/swagger";
 import {UserEntity} from "./entity/user.entity";
 import {AccessTokenGuard} from "../auth/guards/accessToken.guard";
+import {RoleGuard} from "../auth/guards/role.guard";
+import {Roles} from "../decorators/roles.decorator";
 
 @Controller('users')
 @UseGuards(AccessTokenGuard)
@@ -13,13 +15,17 @@ export class UsersController {
 
   constructor(private readonly usersService: UsersService) {}
 
-	@Post()//roleguard admin
+	@Post()
+	@Roles(Role.ADMIN)
+	@UseGuards(RoleGuard)
 	@ApiCreatedResponse({ type: UserEntity })
 	create(@Body() createUserDto: CreateUserDto, role?: Role) {
 		return this.usersService.create(createUserDto, role);
 	}
 
-	@Get()//roleguard admin
+	@Get()
+	@Roles(Role.ADMIN)
+	@UseGuards(RoleGuard)
 	@ApiOkResponse({ type: UserEntity, isArray: true })
 	getAll() {
 		return this.usersService.findAll();
