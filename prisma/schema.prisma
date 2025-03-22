@@ -28,23 +28,35 @@ model User {
 }
 
 model Profile {
-  id             String   @id @default(uuid()) @db.Uuid
-  userId         String   @unique @map("user_id") @db.Uuid
-  user           User     @relation(fields: [userId], references: [id])
-  phoneNumber    BigInt   @map("phone_number")
-  avatar         String   @unique @db.Uuid
-  friends        String[]
-  files          String[]
-  subscriptions  String[]
-  savedPeople    String[] @map("saved_people")
-  savedEvents    String[] @map("saved_events")
-  selectedEvents String[] @map("selected_events")
+  id            String         @id @default(uuid()) @db.Uuid
+  userId        String         @unique @map("user_id") @db.Uuid
+  user          User           @relation(fields: [userId], references: [id])
+  phoneNumber   BigInt         @map("phone_number")
+  avatar        String         @unique @db.Uuid
+  subscriptions String[]
+  savedEvents   String[]       @map("saved_events")
+  ProfilePeople ProfilePeople?
 
   @@map("profiles")
+}
+
+model ProfilePeople {
+  id             String       @id @default(uuid()) @db.Uuid
+  profileId      String       @unique @map("profile_id") @db.Uuid
+  profile        Profile      @relation(fields: [profileId], references: [id])
+  savedProfileId String       @unique @map("saved_profile_id") @db.Uuid
+  status         PeopleStatus
+
+  @@map("profiles-people")
 }
 
 enum Role {
   USER
   MANAGER
   ADMIN
+}
+
+enum PeopleStatus {
+  SAVED
+  FRIEND
 }
