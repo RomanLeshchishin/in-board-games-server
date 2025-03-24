@@ -11,6 +11,7 @@ import { AuthEntity } from './entity/auth.entity';
 import { TokenEntity } from './entity/token.entity';
 import { Response } from 'express';
 import { UserEntity } from '../users/entity/user.entity';
+import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class AuthService {
@@ -19,17 +20,18 @@ export class AuthService {
     private configService: ConfigService,
     private jwtService: JwtService,
     private userService: UsersService,
+    private profileService: ProfileService,
   ) {}
 
   async register(dto: RegisterDto, role: Role, res: Response): Promise<AuthEntity> {
     const candidate = await this.userService.findByEmail(dto.email);
-
     if (candidate) {
       throw new HttpException(`Пользователь с email ${dto.email} уже существует`, HttpStatus.BAD_REQUEST);
     }
 
     const user = await this.userService.create(dto, role);
     const tokens = await this.generateTokens(user.id, user.role);
+    await this.profileService.create(user.id);
 
     this.setRefreshToCookie('refreshToken', tokens.refreshToken, res);
 
@@ -38,7 +40,6 @@ export class AuthService {
 
   async login(dto: LoginDto, res: Response): Promise<AuthEntity> {
     const user = await this.userService.findByEmail(dto.email);
-
     if (!user) {
       throw new UnauthorizedException({ message: 'Неправильный пароль или email' });
     }
@@ -49,7 +50,6 @@ export class AuthService {
     }
 
     const tokens = await this.generateTokens(user.id, user.role);
-
     this.setRefreshToCookie('refreshToken', tokens.refreshToken, res);
 
     const userResponse: UserEntity = {
@@ -69,7 +69,6 @@ export class AuthService {
         secret: this.configService.getOrThrow('JWT_REFRESH_SECRET'),
       });
       const tokens = await this.generateTokens(payload.userId, payload.role);
-
       this.setRefreshToCookie('refreshToken', tokens.refreshToken, res);
 
       return { accessToken: tokens.accessToken };

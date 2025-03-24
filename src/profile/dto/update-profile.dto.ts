@@ -2,8 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateProfileDto {
   @ApiProperty()
+  avatar: string;
+
+  @ApiProperty()
   phoneNumber: bigint;
 
   @ApiProperty()
-  avatar: string;
+  patronymic: string;
+
+  @ApiProperty()
+  birthday: Date;
 }

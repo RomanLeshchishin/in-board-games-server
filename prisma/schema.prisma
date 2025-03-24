@@ -31,8 +31,10 @@ model Profile {
   id            String         @id @default(uuid()) @db.Uuid
   userId        String         @unique @map("user_id") @db.Uuid
   user          User           @relation(fields: [userId], references: [id])
-  phoneNumber   BigInt         @map("phone_number")
-  avatar        String         @unique @db.Uuid
+  avatar        String?        @unique @db.Uuid
+  phoneNumber   BigInt?        @map("phone_number")
+  patronymic    String?
+  birthday      DateTime?
   subscriptions String[]
   savedEvents   String[]       @map("saved_events")
   ProfilePeople ProfilePeople?
