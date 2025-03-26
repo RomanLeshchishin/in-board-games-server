@@ -4,8 +4,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserProfileDto {
   @ApiProperty()
-  user: UpdateUserDto;
+  user: Partial<UpdateUserDto>;
 
   @ApiProperty()
-  profile: UpdateProfileDto;
+  profile: Partial<UpdateProfileDto>;
 }

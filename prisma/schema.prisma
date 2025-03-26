@@ -35,8 +35,8 @@ model Profile {
   phoneNumber   BigInt?        @map("phone_number")
   patronymic    String?
   birthday      DateTime?
-  subscriptions String[]
-  savedEvents   String[]       @map("saved_events")
+  // subscriptions String[]
+  // savedEvents   String[]       @map("saved_events")
   ProfilePeople ProfilePeople?
 
   @@map("profiles")

@@ -8,14 +8,14 @@ export class ProfileEntity {
   userId: string;
 
   @ApiProperty()
-  avatar?: string;
+  avatar: string | null;
 
   @ApiProperty()
-  phoneNumber?: bigint;
+  phoneNumber: bigint | null;
 
   @ApiProperty()
-  patronymic?: string;
+  patronymic: string | null;
 
   @ApiProperty()
-  birthday?: Date;
+  birthday: Date | null;
 }
