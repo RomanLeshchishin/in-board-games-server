@@ -52,6 +52,16 @@ model ProfilePeople {
   @@map("profiles-people")
 }
 
+model File {
+  id        String    @id @default(uuid()) @db.Uuid
+  modelId   String    @map("model_id") @db.Uuid
+  modelType ModelType @map("model_type")
+  fileName  String    @map("file_name")
+  fileLink  String    @map("file_link")
+
+  @@map("files")
+}
+
 enum Role {
   USER
   MANAGER
@@ -61,4 +71,15 @@ enum Role {
 enum PeopleStatus {
   SAVED
   FRIEND
+}
+
+enum ModelType {
+  USER
+  AVATAR
+  FORM
+  COMMUNITY
+  EVENT
+  CHAT
+  MESSAGE
+  FEEDBACK
 }
