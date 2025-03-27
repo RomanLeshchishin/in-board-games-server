@@ -75,6 +75,7 @@ enum PeopleStatus {
 
 enum ModelType {
   USER
+  MANAGER
   AVATAR
   FORM
   COMMUNITY
