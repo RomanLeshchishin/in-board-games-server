@@ -4,8 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from '@prisma/client';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { UserEntity } from './entity/user.entity';
-import { AccessTokenGuard } from '../auth/guards/accessToken.guard';
-import { RoleGuard } from '../auth/guards/role.guard';
+import { AccessTokenGuard } from '../guards/accessToken.guard';
+import { RoleGuard } from '../guards/role.guard';
 import { Roles } from '../decorators/roles.decorator';
 
 @Controller('users')

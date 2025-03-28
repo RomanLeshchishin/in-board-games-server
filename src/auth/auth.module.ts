@@ -5,8 +5,8 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
-import { AccessTokenStrategy } from './strategies/accessToken.strategy';
-import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { AccessTokenStrategy } from '../strategies/accessToken.strategy';
+import { RefreshTokenStrategy } from '../strategies/refreshToken.strategy';
 import { ProfileModule } from '../profile/profile.module';
 
 @Module({

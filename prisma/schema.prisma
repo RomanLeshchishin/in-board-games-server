@@ -74,13 +74,11 @@ enum PeopleStatus {
 }
 
 enum ModelType {
-  USER
-  MANAGER
   AVATAR
-  FORM
+  FORM//
   COMMUNITY
   EVENT
-  CHAT
-  MESSAGE
+  CHAT//
+  MESSAGE//
   FEEDBACK
 }

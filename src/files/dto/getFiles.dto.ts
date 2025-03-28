@@ -1,6 +1,6 @@
 import { ModelType } from '@prisma/client';
 
-export class UploadFilesDto {
+export class GetFilesDto {
   modelId: string;
-  modelType: ModelType;
+  modelType?: ModelType;
 }

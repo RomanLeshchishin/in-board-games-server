@@ -6,6 +6,8 @@ import { S3 } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { UploadFilesDto } from './dto/uploadFiles.dto';
 import { UploadFilesEntity } from './entity/uploadFiles.entity';
+import { GetFilesDto } from './dto/getFiles.dto';
+import { FileEntity } from './entity/file.entity';
 
 @Injectable()
 export class FilesService {
@@ -42,12 +44,12 @@ export class FilesService {
 
   async saveFileToDatabase(fileName: string, fileLink: string, dto: UploadFilesDto): Promise<UploadFilesEntity> {
     const newFile = await this.prismaService.file.create({
-      data: { modelId: dto.ownerId, modelType: dto.modelType, fileName, fileLink },
+      data: { modelId: dto.modelId, modelType: dto.modelType, fileName, fileLink },
     });
     return { id: newFile.id, fileName: newFile.fileName, link: fileLink };
   }
 
-  async getFileById(id: string) {
+  async findFileById(id: string): Promise<FileEntity> {
     const file = await this.prismaService.file.findUnique({ where: { id } });
     if (!file) {
       throw new NotFoundException();
@@ -55,7 +57,15 @@ export class FilesService {
     return file;
   }
 
-  async saveFiles(newFiles: MFile[], dto: UploadFilesDto) {
+  findFilesByModelId(dto: GetFilesDto): Promise<FileEntity[]> {
+    if (dto.modelType) {
+      return this.prismaService.file.findMany({ where: { id: dto.modelId, modelType: dto.modelType } });
+    } else {
+      return this.prismaService.file.findMany({ where: { id: dto.modelId } });
+    }
+  }
+
+  async saveFiles(newFiles: MFile[], dto: UploadFilesDto): Promise<UploadFilesEntity[]> {
     const res = await Promise.all(
       newFiles.map(async file => {
         const fileLink = await this.uploadFileToBucket(file.buffer, file.originalname);
@@ -101,5 +111,9 @@ export class FilesService {
       }),
     );
     return newFiles;
+  }
+
+  async deleteFileById(id: string): Promise<FileEntity> {
+    return this.prismaService.file.delete({ where: { id } });
   }
 }

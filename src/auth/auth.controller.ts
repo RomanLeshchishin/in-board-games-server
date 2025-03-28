@@ -5,11 +5,11 @@ import { LoginDto } from './dto/login.dto';
 import { Role } from '@prisma/client';
 import { Response } from 'express';
 import { Cookies } from '../decorators/cookies.decorator';
-import { RefreshTokenGuard } from './guards/refreshToken.guard';
-import { AccessTokenGuard } from './guards/accessToken.guard';
+import { RefreshTokenGuard } from '../guards/refreshToken.guard';
+import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { ApiCreatedResponse } from '@nestjs/swagger';
 import { AuthEntity } from './entity/auth.entity';
-import { AdminRegisterGuard } from './guards/adminRegister.guard';
+import { AdminRegisterGuard } from '../guards/adminRegister.guard';
 
 @Controller('auth')
 export class AuthController {
