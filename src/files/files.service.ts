@@ -1,45 +1,44 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MFile } from './MFile.class';
-import sharp from 'sharp';
-import { S3 } from 'aws-sdk';
+import * as sharp from 'sharp';
+import EasyYandexS3 from 'easy-yandex-s3';
 import { ConfigService } from '@nestjs/config';
 import { UploadFilesDto } from './dto/uploadFiles.dto';
 import { UploadFilesEntity } from './entity/uploadFiles.entity';
 import { GetFilesDto } from './dto/getFiles.dto';
 import { FileEntity } from './entity/file.entity';
+import { GetAuthFilesDto } from './dto/getAuthFiles.dto';
 
 @Injectable()
 export class FilesService {
-  private s3: S3;
+  private s3: EasyYandexS3;
 
   constructor(
     private prismaService: PrismaService,
     private configService: ConfigService,
   ) {
-    this.s3 = new S3({
-      endpoint: this.configService.getOrThrow('YANDEX_STORAGE_ENDPOINT'),
-      region: this.configService.getOrThrow('YANDEX_STORAGE_REGION'),
-      credentials: {
+    this.s3 = new EasyYandexS3({
+      auth: {
         accessKeyId: this.configService.getOrThrow('YANDEX_STORAGE_ACCESS_KEY'),
         secretAccessKey: this.configService.getOrThrow('YANDEX_STORAGE_SECRET_KEY'),
       },
+      Bucket: this.configService.getOrThrow('YANDEX_STORAGE_BUCKET_NAME'),
+      debug: true,
     });
   }
 
   async uploadFileToBucket(fileBuffer: Buffer, filename: string): Promise<string> {
-    const bucketName = this.configService.get('YANDEX_STORAGE_BUCKET_NAME');
+    const uploadResult = await this.s3.Upload(
+      { buffer: fileBuffer, name: filename },
+      '/uploads/', // Каталог внутри бакета
+    );
 
-    const uploadResult = await this.s3
-      .upload({
-        Bucket: bucketName,
-        Key: filename,
-        Body: fileBuffer,
-        ACL: 'public-read',
-      })
-      .promise();
+    if (!uploadResult || typeof uploadResult !== 'object' || !('Location' in uploadResult)) {
+      throw new Error('Ошибка: Не получилось загрузить файл в Yandex S3');
+    }
 
-    return uploadResult.Location; // Возвращает публичную ссылку на файл
+    return uploadResult.Location;
   }
 
   async saveFileToDatabase(fileName: string, fileLink: string, dto: UploadFilesDto): Promise<UploadFilesEntity> {
@@ -57,7 +56,7 @@ export class FilesService {
     return file;
   }
 
-  findFilesByModelId(dto: GetFilesDto): Promise<FileEntity[]> {
+  findFilesByModelId(dto: GetFilesDto | GetAuthFilesDto): Promise<FileEntity[]> {
     if (dto.modelType) {
       return this.prismaService.file.findMany({ where: { id: dto.modelId, modelType: dto.modelType } });
     } else {
@@ -73,6 +72,7 @@ export class FilesService {
         return newFile;
       }),
     );
+
     return res;
   }
 

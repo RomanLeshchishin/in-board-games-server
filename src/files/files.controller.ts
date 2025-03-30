@@ -19,6 +19,10 @@ import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger'
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { FileEntity } from './entity/file.entity';
 import { UploadFilesEntity } from './entity/uploadFiles.entity';
+import { GetFileDto } from './dto/getFile.dto';
+import { ModelTypes } from '../decorators/modelTypes.decorator';
+import { ModelTypeGuard } from '../guards/modelType.guard';
+import { GetAuthFilesDto } from './dto/getAuthFiles.dto';
 
 @Controller('files')
 export class FilesController {
@@ -35,18 +39,34 @@ export class FilesController {
     return this.filesService.saveFiles(newFiles, uploadFilesDto);
   }
 
-  @Get('/:id')
+  @Get('single/')
+  @UseGuards(ModelTypeGuard)
   @ApiOkResponse({ type: FileEntity })
-  getFileById(@Param('id') id: string) {
-    //сделать защищённые запросы для неавторизованных по определённым типам файлов
+  @ModelTypes('AVATAR', 'COMMUNITY', 'EVENT', 'FEEDBACK')
+  getNoAuthFileById(@Query() getFileDto: GetFileDto) {
+    return this.filesService.findFileById(getFileDto.id);
+  }
+
+  @Get('single-protected/:id')
+  @UseGuards(AccessTokenGuard)
+  @ApiOkResponse({ type: FileEntity })
+  getAuthFileById(@Param('id') id: string) {
     return this.filesService.findFileById(id);
   }
 
-  @Get('modelId/')
+  @Get('all/')
+  @UseGuards(ModelTypeGuard)
   @ApiOkResponse({ type: FileEntity, isArray: true })
-  getFilesByModelId(@Query() getFilesDto: GetFilesDto) {
-    //сделать защищённые запросы для неавторизованных по определённым типам файлов
+  @ModelTypes('AVATAR', 'COMMUNITY', 'EVENT', 'FEEDBACK')
+  getNoAuthFilesByModelId(@Query() getFilesDto: GetFilesDto) {
     return this.filesService.findFilesByModelId(getFilesDto);
+  }
+
+  @Get('all-protected/')
+  @UseGuards(AccessTokenGuard)
+  @ApiOkResponse({ type: FileEntity, isArray: true })
+  getAuthFilesByModelId(@Query() getAuthFilesDto: GetAuthFilesDto) {
+    return this.filesService.findFilesByModelId(getAuthFilesDto);
   }
 
   @Delete('/:id')

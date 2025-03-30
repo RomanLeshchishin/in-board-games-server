@@ -23,5 +23,5 @@ export class ProfileController {
     return this.profilesService.update(id, updateUserProfileDto);
   }
 
-  //getAllProfiles без user role, id
+  //getAllProfiles user: убрать id и role, profile: убрать userId
 }
