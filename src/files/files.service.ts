@@ -33,7 +33,7 @@ export class FilesService {
   async uploadFileToBucket(fileBuffer: Buffer, filename: string): Promise<string> {
     if (fileBuffer.length > this.MAX_FILE_SIZE) {
       throw new BadRequestException('Ошибка: слишком большой размер загружаемого файла');
-    }
+    }// уникальный хэш для файла
     const uploadResult = await this.s3.Upload(
       { buffer: fileBuffer, name: filename },
       '/uploads/', // Каталог внутри бакета
@@ -127,9 +127,8 @@ export class FilesService {
   }
 
   async deleteFileById(id: string): Promise<FileEntity> {
-    // удаление файлов в yandex object storage
     const file = await this.prismaService.file.delete({ where: { id } });
-    await this.s3.Remove(file.fileLink); // не работает
+    await this.s3.Remove(`${file.fileLink.split('/')[3]}/${file.fileLink.split('/')[4]}`);
     return file;
   }
 }
