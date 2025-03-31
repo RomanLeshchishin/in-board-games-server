@@ -44,7 +44,7 @@ export class FilesController {
   @ApiOkResponse({ type: FileEntity })
   @ModelTypes('AVATAR', 'COMMUNITY', 'EVENT', 'FEEDBACK')
   getNoAuthFileById(@Query() getFileDto: GetFileDto) {
-    return this.filesService.findFileById(getFileDto.id);
+    return this.filesService.findFileByIdAndModelType(getFileDto);
   }
 
   @Get('single-protected/:id')
@@ -69,7 +69,7 @@ export class FilesController {
     return this.filesService.findFilesByModelId(getAuthFilesDto);
   }
 
-  @Delete('/:id')
+  @Delete('/:id') //
   @UseGuards(AccessTokenGuard)
   deleteFileById(@Param('id') id: string) {
     return this.filesService.deleteFileById(id);
