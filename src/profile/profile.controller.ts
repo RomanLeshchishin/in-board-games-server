@@ -5,23 +5,28 @@ import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { UserProfileEntity } from './entity/user-profile.entity';
 import { GetProfileEntity } from './entity/get-profile.entity';
+import { ProfileEntity } from './entity/profile.entity';
 
 @Controller('profile')
 export class ProfileController {
-  constructor(private readonly profilesService: ProfileService) {}
+  constructor(private readonly profileService: ProfileService) {}
 
-  @Get('/:id')
+  @Get('id/:id')
   @ApiOkResponse({ type: UserProfileEntity })
   getById(@Param('id') id: string) {
-    return this.profilesService.findById(id);
+    return this.profileService.findById(id);
+  }
+
+  @Get('all')
+  @ApiOkResponse({ type: ProfileEntity, isArray: true })
+  getAll() {
+    return this.profileService.findAll();
   }
 
   @Put('/:id')
   @UseGuards(AccessTokenGuard)
   @ApiOkResponse({ type: GetProfileEntity })
   update(@Param('id') id: string, @Body() updateUserProfileDto: UpdateUserProfileDto) {
-    return this.profilesService.update(id, updateUserProfileDto);
+    return this.profileService.update(id, updateUserProfileDto);
   }
-
-  //getAllProfiles user: убрать id и role, profile: убрать userId
 }

@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { UsersService } from '../users/users.service';
 import { UserProfileEntity } from './entity/user-profile.entity';
 import { GetProfileEntity } from './entity/get-profile.entity';
+import { ProfileEntity } from './entity/profile.entity';
 
 @Injectable()
 export class ProfileService {
@@ -17,9 +18,22 @@ export class ProfileService {
   }
 
   async findById(userId: string): Promise<GetProfileEntity> {
-    const updatedProfile = await this.prismaService.profile.findUnique({ where: { userId } });
-    const updatedUser = await this.userService.findById(userId);
-    return { user: updatedUser, profile: updatedProfile };
+    const profile = await this.prismaService.profile.findUnique({ where: { userId } });
+    const user = await this.userService.findById(userId);
+    if (profile && user) {
+      const { id, ...userResponse } = user;
+      const { userId, ...profileResponse } = profile;
+      return { user: userResponse, profile: profileResponse };
+    } else {
+      throw new NotFoundException('user или profile не найдены');
+    }
+  }
+
+  findAll(): Promise<ProfileEntity[]> {
+    return this.prismaService.profile.findMany({
+      omit: { userId: true },
+      include: { user: { select: { firstName: true, lastName: true, email: true, role: true } } },
+    });
   }
 
   async update(userId: string, dto: Partial<UpdateUserProfileDto>): Promise<UserProfileEntity> {

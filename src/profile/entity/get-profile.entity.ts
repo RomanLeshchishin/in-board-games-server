@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../../users/entity/user.entity';
 import { ProfileEntity } from './profile.entity';
+import { UserEntity } from '../../users/entity/user.entity';
 
 export class GetProfileEntity {
   @ApiProperty()
-  user: UserEntity | null;
+  user: Omit<UserEntity, 'id'> | null;
 
   @ApiProperty()
   profile: ProfileEntity | null;

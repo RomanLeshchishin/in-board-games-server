@@ -5,9 +5,6 @@ export class ProfileEntity {
   id: string;
 
   @ApiProperty()
-  userId: string;
-
-  @ApiProperty()
   avatar: string | null;
 
   @ApiProperty()

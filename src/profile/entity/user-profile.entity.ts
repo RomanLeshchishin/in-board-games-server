@@ -4,8 +4,8 @@ import { ProfileEntity } from './profile.entity';
 
 export class UserProfileEntity {
   @ApiProperty()
-  user: UserEntity; //убрать id и role
+  user: UserEntity;
 
   @ApiProperty()
-  profile: ProfileEntity; //убрать userId
+  profile: ProfileEntity;
 }
