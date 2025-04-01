@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MFile } from './MFile.class';
 import * as sharp from 'sharp';
@@ -10,6 +15,7 @@ import { GetFilesDto } from './dto/getFiles.dto';
 import { FileEntity } from './entity/file.entity';
 import { GetAuthFilesDto } from './dto/getAuthFiles.dto';
 import { GetFileDto } from './dto/getFile.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class FilesService {
@@ -19,6 +25,7 @@ export class FilesService {
   constructor(
     private prismaService: PrismaService,
     private configService: ConfigService,
+    private usersService: UsersService,
   ) {
     this.s3 = new EasyYandexS3({
       auth: {
@@ -30,13 +37,13 @@ export class FilesService {
     });
   }
 
-  async uploadFileToBucket(fileBuffer: Buffer, filename: string): Promise<string> {
+  async uploadFileToBucket(fileBuffer: Buffer, fileName: string, directoryName: string): Promise<string> {
     if (fileBuffer.length > this.MAX_FILE_SIZE) {
       throw new BadRequestException('Ошибка: слишком большой размер загружаемого файла');
-    }// уникальный хэш для файла
+    }
     const uploadResult = await this.s3.Upload(
-      { buffer: fileBuffer, name: filename },
-      '/uploads/', // Каталог внутри бакета
+      { buffer: fileBuffer, name: fileName },
+      directoryName, // Каталог внутри бакета
     );
 
     if (!uploadResult || typeof uploadResult !== 'object' || !('Location' in uploadResult)) {
@@ -53,40 +60,23 @@ export class FilesService {
     return { id: newFile.id, fileName: newFile.fileName, link: fileLink };
   }
 
-  async findFileByIdAndModelType(dto: GetFileDto): Promise<FileEntity> {
-    const file = await this.prismaService.file.findUnique({ where: { id: dto.id, modelType: dto.modelType } });
-    if (!file) {
-      throw new NotFoundException();
-    }
-    return file;
-  }
-
-  async findFileById(id: string): Promise<FileEntity> {
-    const file = await this.prismaService.file.findUnique({ where: { id } });
-    if (!file) {
-      throw new NotFoundException();
-    }
-    return file;
-  }
-
-  findFilesByModelId(dto: GetFilesDto | GetAuthFilesDto): Promise<FileEntity[]> {
-    if (dto.modelType) {
-      return this.prismaService.file.findMany({ where: { modelId: dto.modelId, modelType: dto.modelType } });
+  async saveFiles(newFiles: MFile[], dto: UploadFilesDto, req: any): Promise<UploadFilesEntity[]> {
+    if (req.user) {
+      const user = await this.usersService.findById(req.user.userId);
+      if (user) {
+        return await Promise.all(
+          newFiles.map(async file => {
+            const fileLink = await this.uploadFileToBucket(file.buffer, file.originalname, user.email);
+            const newFile = await this.saveFileToDatabase(file.originalname, fileLink, dto);
+            return newFile;
+          }),
+        );
+      } else {
+        throw new NotFoundException('user не найден');
+      }
     } else {
-      return this.prismaService.file.findMany({ where: { modelId: dto.modelId } });
+      throw new UnauthorizedException();
     }
-  }
-
-  async saveFiles(newFiles: MFile[], dto: UploadFilesDto): Promise<UploadFilesEntity[]> {
-    const res = await Promise.all(
-      newFiles.map(async file => {
-        const fileLink = await this.uploadFileToBucket(file.buffer, file.originalname);
-        const newFile = await this.saveFileToDatabase(file.originalname, fileLink, dto);
-        return newFile;
-      }),
-    );
-
-    return res;
   }
 
   private async convertToWebP(file: Buffer) {
@@ -124,6 +114,30 @@ export class FilesService {
       }),
     );
     return newFiles;
+  }
+
+  async findFileByIdAndModelType(dto: GetFileDto): Promise<FileEntity> {
+    const file = await this.prismaService.file.findUnique({ where: { id: dto.id, modelType: dto.modelType } });
+    if (!file) {
+      throw new NotFoundException();
+    }
+    return file;
+  }
+
+  async findFileById(id: string): Promise<FileEntity> {
+    const file = await this.prismaService.file.findUnique({ where: { id } });
+    if (!file) {
+      throw new NotFoundException();
+    }
+    return file;
+  }
+
+  findFilesByModelId(dto: GetFilesDto | GetAuthFilesDto): Promise<FileEntity[]> {
+    if (dto.modelType) {
+      return this.prismaService.file.findMany({ where: { modelId: dto.modelId, modelType: dto.modelType } });
+    } else {
+      return this.prismaService.file.findMany({ where: { modelId: dto.modelId } });
+    }
   }
 
   async deleteFileById(id: string): Promise<FileEntity> {

@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -34,9 +35,9 @@ export class FilesController {
   @UseInterceptors(FilesInterceptor('files'))
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ type: UploadFilesEntity })
-  async uploadFiles(@UploadedFiles() files: Express.Multer.File[], @Body() uploadFilesDto: UploadFilesDto) {
+  async uploadFiles(@UploadedFiles() files: Express.Multer.File[], @Body() uploadFilesDto: UploadFilesDto, @Req() reg) {
     const newFiles = await this.filesService.filterFiles(files);
-    return this.filesService.saveFiles(newFiles, uploadFilesDto);
+    return this.filesService.saveFiles(newFiles, uploadFilesDto, reg);
   }
 
   @Get('single/')
