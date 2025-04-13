@@ -16,7 +16,7 @@ import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadFilesDto } from './dto/uploadFiles.dto';
 import { GetFilesDto } from './dto/getFiles.dto';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { FileEntity } from './entity/file.entity';
 import { UploadFilesEntity } from './entity/uploadFiles.entity';
@@ -25,6 +25,7 @@ import { ModelTypes } from '../decorators/modelTypes.decorator';
 import { ModelTypeGuard } from '../guards/modelType.guard';
 import { GetAuthFilesDto } from './dto/getAuthFiles.dto';
 
+@ApiTags('files')
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}

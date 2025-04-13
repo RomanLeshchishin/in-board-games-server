@@ -7,10 +7,11 @@ import { Response } from 'express';
 import { Cookies } from '../decorators/cookies.decorator';
 import { RefreshTokenGuard } from '../guards/refreshToken.guard';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
-import { ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthEntity } from './entity/auth.entity';
 import { AdminRegisterGuard } from '../guards/adminRegister.guard';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
