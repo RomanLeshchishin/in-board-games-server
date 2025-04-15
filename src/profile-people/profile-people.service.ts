@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddPeopleDto } from './dto/add-people.dto';
 import { PeopleStatus } from '@prisma/client';
@@ -6,14 +6,10 @@ import { GetPeopleDto } from './dto/get-people.dto';
 import { ProfilePeopleEntity } from './entity/profile-people.entity';
 import { PeopleParamDto } from './dto/people-param.dto';
 import { UpdatePeopleDto } from './dto/update-people.dto';
-import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class ProfilePeopleService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly profileService: ProfileService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async addPeople(dto: AddPeopleDto, status: PeopleStatus, user: any): Promise<ProfilePeopleEntity> {
     if (user.userId === dto.savedUserId) {
