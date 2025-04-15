@@ -22,8 +22,7 @@ export class ProfileService {
     const user = await this.userService.findById(userId);
     if (profile && user) {
       const { id, ...userResponse } = user;
-      const { userId, ...profileResponse } = profile;
-      return { user: userResponse, profile: profileResponse };
+      return { user: userResponse, profile };
     } else {
       throw new NotFoundException('user или profile не найдены');
     }
@@ -31,7 +30,6 @@ export class ProfileService {
 
   findAll(): Promise<ProfileEntity[]> {
     return this.prismaService.profile.findMany({
-      omit: { userId: true },
       include: { user: { select: { firstName: true, lastName: true, email: true, role: true } } },
     });
   }

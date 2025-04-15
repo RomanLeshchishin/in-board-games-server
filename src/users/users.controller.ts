@@ -31,6 +31,8 @@ export class UsersController {
   }
 
   @Get('email/:email')
+  @Roles(Role.ADMIN)
+  @UseGuards(RoleGuard)
   @ApiOkResponse({ type: UserEntity })
   getByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);

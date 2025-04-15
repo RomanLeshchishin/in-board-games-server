@@ -7,5 +7,5 @@ export class UserProfileEntity {
   user: UserEntity;
 
   @ApiProperty()
-  profile: ProfileEntity;
+  profile: ProfileEntity & { id: string };
 }

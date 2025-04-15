@@ -14,9 +14,11 @@ export class ProfileController {
 
   @Get('id/:id')
   @ApiOkResponse({ type: UserProfileEntity })
-  getById(@Param('id') id: string) {
+  getByUserId(@Param('id') id: string) {
     return this.profileService.findById(id);
   }
+
+  getById() {}
 
   @Get('all')
   @ApiOkResponse({ type: ProfileEntity, isArray: true })

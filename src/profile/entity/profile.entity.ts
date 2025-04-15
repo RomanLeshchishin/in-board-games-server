@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ProfileEntity {
   @ApiProperty()
-  id: string;
+  userId: string;
 
   @ApiProperty()
   avatar: string | null;

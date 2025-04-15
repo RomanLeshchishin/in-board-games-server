@@ -7,5 +7,5 @@ export class GetProfileEntity {
   user: Omit<UserEntity, 'id'> | null;
 
   @ApiProperty()
-  profile: ProfileEntity | null;
+  profile: (ProfileEntity & { id: string }) | null;
 }
