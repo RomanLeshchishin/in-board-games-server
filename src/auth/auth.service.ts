@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -16,7 +15,6 @@ import { ProfileService } from '../profile/profile.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private prismaService: PrismaService,
     private configService: ConfigService,
     private jwtService: JwtService,
     private userService: UsersService,
