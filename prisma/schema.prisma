@@ -28,27 +28,32 @@ model User {
 }
 
 model Profile {
-  id            String         @id @default(uuid()) @db.Uuid
-  userId        String         @unique @map("user_id") @db.Uuid
-  user          User           @relation(fields: [userId], references: [id])
-  avatar        String?        @unique @db.Uuid
-  phoneNumber   BigInt?        @map("phone_number")
-  patronymic    String?
-  birthday      DateTime?
+  id              String          @id @default(uuid()) @db.Uuid
+  userId          String          @unique @map("user_id") @db.Uuid
+  user            User            @relation(fields: [userId], references: [id])
+  avatar          String?         @unique @db.Uuid
+  phoneNumber     BigInt?         @map("phone_number")
+  patronymic      String?
+  birthday        DateTime?
   // subscriptions String[]
   // savedEvents   String[]       @map("saved_events")
-  ProfilePeople ProfilePeople?
+
+  saverProfiles   ProfilePeople[] @relation("saverProfiles") //кто сохранил к себе профили
+  savedByProfiles ProfilePeople[] @relation("savedByProfiles") //тот кто был сохранён другими профилями
 
   @@map("profiles")
 }
 
 model ProfilePeople {
-  id             String       @id @default(uuid()) @db.Uuid
-  profileId      String       @unique @map("profile_id") @db.Uuid
-  profile        Profile      @relation(fields: [profileId], references: [id])
-  savedProfileId String       @unique @map("saved_profile_id") @db.Uuid
-  status         PeopleStatus
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @map("user_id") @db.Uuid
+  savedUserId String       @map("saved_user_id") @db.Uuid
+  status      PeopleStatus
 
+  saver       Profile      @relation("saverProfiles", fields: [userId], references: [userId]) //профиль-инициатор сохранения других пользователей
+  saved       Profile      @relation("savedByProfiles", fields: [savedUserId], references: [userId]) //сохранённый профиль другими пользователями
+
+  @@unique([userId, savedUserId], name: "userIdSavedUserId")
   @@map("profiles-people")
 }
 
