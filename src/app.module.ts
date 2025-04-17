@@ -7,6 +7,7 @@ import { FilesModule } from './files/files.module';
 import { ProfilePeopleModule } from './profile-people/profile-people.module';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { FormModule } from './form/form.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
     ProfileModule,
     FilesModule,
     ProfilePeopleModule,
+    FormModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })

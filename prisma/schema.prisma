@@ -22,24 +22,26 @@ model User {
   lastName  String   @map("last_name")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  profile   Profile?
+
+  profile Profile?
 
   @@map("users")
 }
 
 model Profile {
-  id              String          @id @default(uuid()) @db.Uuid
-  userId          String          @unique @map("user_id") @db.Uuid
-  user            User            @relation(fields: [userId], references: [id])
-  avatar          String?         @unique @db.Uuid
-  phoneNumber     BigInt?         @map("phone_number")
-  patronymic      String?
-  birthday        DateTime?
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @unique @map("user_id") @db.Uuid
+  user        User      @relation(fields: [userId], references: [id])
+  avatar      String?   @unique @db.Uuid
+  phoneNumber BigInt?   @map("phone_number")
+  patronymic  String?
+  birthday    DateTime?
   // subscriptions String[]
   // savedEvents   String[]       @map("saved_events")
 
-  saverProfiles   ProfilePeople[] @relation("saverProfiles") //кто сохранил к себе профили
-  savedByProfiles ProfilePeople[] @relation("savedByProfiles") //тот кто был сохранён другими профилями
+  saverProfiles   ProfilePeople[] @relation("saverProfiles") // кто сохранил к себе профили
+  savedByProfiles ProfilePeople[] @relation("savedByProfiles") // тот кто был сохранён другими профилями
+  form            Form?
 
   @@map("profiles")
 }
@@ -50,11 +52,30 @@ model ProfilePeople {
   savedUserId String       @map("saved_user_id") @db.Uuid
   status      PeopleStatus
 
-  saver       Profile      @relation("saverProfiles", fields: [userId], references: [userId]) //профиль-инициатор сохранения других пользователей
-  saved       Profile      @relation("savedByProfiles", fields: [savedUserId], references: [userId]) //сохранённый профиль другими пользователями
+  saver Profile @relation("saverProfiles", fields: [userId], references: [userId]) // профиль-инициатор сохранения других пользователей
+  saved Profile @relation("savedByProfiles", fields: [savedUserId], references: [userId]) // сохранённый профиль другими пользователями
 
   @@unique([userId, savedUserId], name: "userIdSavedUserId")
   @@map("profiles-people")
+}
+
+model Form {
+  id           String       @id @default(uuid()) @db.Uuid
+  userId       String       @unique @map("user_id") @db.Uuid
+  age          Int
+  gender       PeopleGender
+  favoriteTime Json[]       @map("favorite_time")
+  address      Json?
+  about        String?
+  institute    String?
+  course       Int?
+  direction    String?
+  profession   String?
+  blockedAt    DateTime?    @map("blocked_at")
+
+  profile Profile @relation(fields: [userId], references: [userId])
+
+  @@map("forms")
 }
 
 model File {
@@ -76,6 +97,11 @@ enum Role {
 enum PeopleStatus {
   SAVED
   FRIEND
+}
+
+enum PeopleGender {
+  MALE
+  FEMALE
 }
 
 enum ModelType {
