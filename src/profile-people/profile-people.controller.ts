@@ -9,6 +9,7 @@ import { UpdatePeopleDto } from './dto/update-people.dto';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { ProfilePeopleEntity } from './entity/profile-people.entity';
 import { Request } from 'express';
+import { User } from '../decorators/user.decorator';
 
 @ApiTags('profile-people')
 @UseGuards(AccessTokenGuard)
@@ -18,16 +19,14 @@ export class ProfilePeopleController {
 
   @Post('saved')
   @ApiCreatedResponse({ type: ProfilePeopleEntity })
-  addSavedPeopleToProfile(@Body() addDto: AddPeopleDto, @Req() req: Request) {
-    const user = req.user;
-    return this.profilePeopleService.addPeople(addDto, PeopleStatus.SAVED, user);
+  addSavedPeopleToProfile(@User('userId') userId: string, @Body() addDto: AddPeopleDto) {
+    return this.profilePeopleService.addPeople(addDto, PeopleStatus.SAVED, userId);
   }
 
   @Post('friend')
   @ApiCreatedResponse({ type: ProfilePeopleEntity })
-  addFriendsToProfile(@Body() addDto: AddPeopleDto, @Req() req: Request) {
-    const user = req.user;
-    return this.profilePeopleService.addPeople(addDto, PeopleStatus.FRIEND, user);
+  addFriendsToProfile(@User('userId') userId: string, @Body() addDto: AddPeopleDto) {
+    return this.profilePeopleService.addPeople(addDto, PeopleStatus.FRIEND, userId);
   }
 
   @Get('/:userId/people')
@@ -38,14 +37,16 @@ export class ProfilePeopleController {
 
   @Put('/:savedUserId')
   @ApiOkResponse({ type: ProfilePeopleEntity })
-  update(@Param() updatePeopleParamDto: PeopleParamDto, @Body() updatePeopleDto: UpdatePeopleDto, @Req() req: Request) {
-    const user = req.user;
-    return this.profilePeopleService.updatePeople(updatePeopleParamDto, updatePeopleDto, user);
+  update(
+    @User('userId') userId: string,
+    @Param() updatePeopleParamDto: PeopleParamDto,
+    @Body() updatePeopleDto: UpdatePeopleDto,
+  ) {
+    return this.profilePeopleService.updatePeople(updatePeopleParamDto, updatePeopleDto, userId);
   }
 
   @Delete('/:savedUserId')
-  delete(@Param() deletePeopleParamDto: PeopleParamDto, @Req() req: Request) {
-    const user = req.user;
-    return this.profilePeopleService.deletePeople(deletePeopleParamDto, user);
+  delete(@User('userId') userId: string, @Param() deletePeopleParamDto: PeopleParamDto) {
+    return this.profilePeopleService.deletePeople(deletePeopleParamDto, userId);
   }
 }

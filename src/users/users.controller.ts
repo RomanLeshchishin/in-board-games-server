@@ -7,6 +7,7 @@ import { UserEntity } from './entity/user.entity';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { RoleGuard } from '../guards/role.guard';
 import { Roles } from '../decorators/roles.decorator';
+import { User } from '../decorators/user.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -38,9 +39,9 @@ export class UsersController {
     return this.usersService.findByEmail(email);
   }
 
-  @Get('/:id')
+  @Get()
   @ApiOkResponse({ type: UserEntity })
-  getById(@Param('id') id: string) {
-    return this.usersService.findById(id);
+  getById(@User('userId') userId: string) {
+    return this.usersService.findById(userId);
   }
 }

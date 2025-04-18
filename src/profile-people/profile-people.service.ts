@@ -11,17 +11,17 @@ import { UpdatePeopleDto } from './dto/update-people.dto';
 export class ProfilePeopleService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async addPeople(dto: AddPeopleDto, status: PeopleStatus, user: any): Promise<ProfilePeopleEntity> {
-    if (user.userId === dto.savedUserId) {
+  async addPeople(dto: AddPeopleDto, status: PeopleStatus, userId: string): Promise<ProfilePeopleEntity> {
+    if (userId === dto.savedUserId) {
       throw new ConflictException('нельзя добавить себя в profile');
     }
 
     const profilePeople = await this.prismaService.profilePeople.findUnique({
-      where: { userIdSavedUserId: { userId: user.userId, savedUserId: dto.savedUserId } },
+      where: { userIdSavedUserId: { userId, savedUserId: dto.savedUserId } },
     });
     if (!profilePeople) {
       return this.prismaService.profilePeople.create({
-        data: { userId: user.userId, savedUserId: dto.savedUserId, status },
+        data: { userId, savedUserId: dto.savedUserId, status },
       });
     } else {
       throw new ConflictException('пользователь уже добавлен в profile');
@@ -32,16 +32,16 @@ export class ProfilePeopleService {
     return this.prismaService.profilePeople.findMany({ where: { userId, status: dto.status } });
   }
 
-  async updatePeople(params: PeopleParamDto, dto: UpdatePeopleDto, user: any): Promise<ProfilePeopleEntity> {
+  async updatePeople(params: PeopleParamDto, dto: UpdatePeopleDto, userId: string): Promise<ProfilePeopleEntity> {
     return this.prismaService.profilePeople.update({
-      where: { userIdSavedUserId: { userId: user.userId, savedUserId: params.savedUserId } },
+      where: { userIdSavedUserId: { userId, savedUserId: params.savedUserId } },
       data: { status: dto.status },
     });
   }
 
-  async deletePeople(params: PeopleParamDto, user: any): Promise<ProfilePeopleEntity> {
+  async deletePeople(params: PeopleParamDto, userId: string): Promise<ProfilePeopleEntity> {
     return this.prismaService.profilePeople.delete({
-      where: { userIdSavedUserId: { userId: user.userId, savedUserId: params.savedUserId } },
+      where: { userIdSavedUserId: { userId, savedUserId: params.savedUserId } },
     });
   }
 }
