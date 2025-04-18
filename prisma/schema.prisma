@@ -71,6 +71,7 @@ model Form {
   course       Int?
   direction    String?
   profession   String?
+  freezeAt     DateTime?    @map("freeze_at")
   blockedAt    DateTime?    @map("blocked_at")
 
   profile Profile @relation(fields: [userId], references: [userId])
