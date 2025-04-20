@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Query, Param, Put, Delete, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Post, Get, Query, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { ProfilePeopleService } from './profile-people.service';
 import { AddPeopleDto } from './dto/add-people.dto';
 import { PeopleStatus } from '@prisma/client';
@@ -8,7 +8,6 @@ import { PeopleParamDto } from './dto/people-param.dto';
 import { UpdatePeopleDto } from './dto/update-people.dto';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { ProfilePeopleEntity } from './entity/profile-people.entity';
-import { Request } from 'express';
 import { User } from '../decorators/user.decorator';
 
 @ApiTags('profile-people')
