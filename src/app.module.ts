@@ -8,6 +8,8 @@ import { ProfilePeopleModule } from './profile-people/profile-people.module';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { FormModule } from './form/form.module';
+import { InterestsModule } from './interests/interests.module';
+import { TopicsModule } from './topics/topics.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { FormModule } from './form/form.module';
     FilesModule,
     ProfilePeopleModule,
     FormModule,
+    InterestsModule,
+    TopicsModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })

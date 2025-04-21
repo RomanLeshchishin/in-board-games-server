@@ -79,6 +79,37 @@ model Form {
   @@map("forms")
 }
 
+model Interest {
+  id    String @id @default(uuid()) @db.Uuid
+  title String
+  area  String
+
+  @@map("interests")
+}
+
+model Topic {
+  id          String  @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+
+  games Game[]
+
+  @@map("topics")
+}
+
+model Game {
+  id                 String  @id @default(uuid()) @db.Uuid
+  topicId            String  @map("topic_id") @db.Uuid
+  title              String
+  description        String?
+  numberParticipants Int
+  age                Int
+
+  topic Topic @relation(fields: [topicId], references: [id])
+
+  @@map("games")
+}
+
 model File {
   id        String    @id @default(uuid()) @db.Uuid
   modelId   String    @map("model_id") @db.Uuid
