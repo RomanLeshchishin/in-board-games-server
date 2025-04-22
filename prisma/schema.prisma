@@ -74,15 +74,53 @@ model Form {
   freezeAt     DateTime?    @map("freeze_at")
   blockedAt    DateTime?    @map("blocked_at")
 
-  profile Profile @relation(fields: [userId], references: [userId])
+  profile   Profile        @relation(fields: [userId], references: [userId])
+  interests FormInterest[] @relation("formInterests")
+  topics    FormTopic[]    @relation("formTopics")
+  games     FormGame[]     @relation("formGames")
 
   @@map("forms")
+}
+
+model FormInterest {
+  id          String @id @default(uuid()) @db.Uuid
+  userId      String @map("user_id") @db.Uuid
+  interestId  String @map("interest_id") @db.Uuid
+
+  form     Form     @relation("formInterests", fields: [userId], references: [userId])
+  interest Interest @relation("interestForms", fields: [interestId], references: [id])
+
+  @@map("forms-interests")
+}
+
+model FormTopic {
+  id      String @id @default(uuid()) @db.Uuid
+  userId  String @map("user_id") @db.Uuid
+  topicId String @map("topic_id") @db.Uuid
+
+  form  Form  @relation("formTopics", fields: [userId], references: [userId])
+  topic Topic @relation("topicForms", fields: [topicId], references: [id])
+
+  @@map("forms-topics")
+}
+
+model FormGame {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  gameId String @map("topic_id") @db.Uuid
+
+  form Form @relation("formGames", fields: [userId], references: [userId])
+  game Game @relation("gameForms", fields: [gameId], references: [id])
+
+  @@map("forms-games")
 }
 
 model Interest {
   id    String @id @default(uuid()) @db.Uuid
   title String
   area  String
+
+  forms FormInterest[] @relation("interestForms")
 
   @@map("interests")
 }
@@ -93,6 +131,7 @@ model Topic {
   description String?
 
   games Game[]
+  forms FormTopic[] @relation("topicForms")
 
   @@map("topics")
 }
@@ -105,7 +144,8 @@ model Game {
   numberParticipants Int
   age                Int
 
-  topic Topic @relation(fields: [topicId], references: [id])
+  topic Topic      @relation(fields: [topicId], references: [id])
+  forms FormGame[] @relation("gameForms")
 
   @@map("games")
 }

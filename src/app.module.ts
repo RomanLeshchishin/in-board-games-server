@@ -11,6 +11,9 @@ import { FormModule } from './form/form.module';
 import { InterestsModule } from './interests/interests.module';
 import { TopicsModule } from './topics/topics.module';
 import { GamesModule } from './games/games.module';
+import { FormInterestsModule } from './form-interests/form-interests.module';
+import { FormTopicsModule } from './form-topics/form-topics.module';
+import { FormGamesModule } from './form-games/form-games.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { GamesModule } from './games/games.module';
     InterestsModule,
     TopicsModule,
     GamesModule,
+    FormInterestsModule,
+    FormTopicsModule,
+    FormGamesModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })
