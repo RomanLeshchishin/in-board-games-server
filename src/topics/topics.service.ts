@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { MFile } from '../files/MFile.class';
-import { TopicEntity } from './entities/topic.entity';
-import { TopicManyEntity } from './entities/topic-many.entity';
+import { TopicEntity } from './entity/topic.entity';
+import { TopicManyEntity } from './entity/topic-many.entity';
 
 @Injectable()
 export class TopicsService {

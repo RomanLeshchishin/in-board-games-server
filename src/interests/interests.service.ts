@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateInterestDto } from './dto/create-interest.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { MFile } from '../files/MFile.class';
-import { InterestEntity } from './entities/interest.entity';
-import { InterestManyEntity } from './entities/interest-many.entity';
+import { InterestEntity } from './entity/interest.entity';
+import { InterestManyEntity } from './entity/interest-many.entity';
 
 @Injectable()
 export class InterestsService {

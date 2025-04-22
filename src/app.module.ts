@@ -10,6 +10,7 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { FormModule } from './form/form.module';
 import { InterestsModule } from './interests/interests.module';
 import { TopicsModule } from './topics/topics.module';
+import { GamesModule } from './games/games.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TopicsModule } from './topics/topics.module';
     FormModule,
     InterestsModule,
     TopicsModule,
+    GamesModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })

@@ -19,8 +19,8 @@ import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { RoleGuard } from '../guards/role.guard';
-import { InterestEntity } from './entities/interest.entity';
-import { InterestManyEntity } from './entities/interest-many.entity';
+import { InterestEntity } from './entity/interest.entity';
+import { InterestManyEntity } from './entity/interest-many.entity';
 
 @ApiTags('interests')
 @UseGuards(AccessTokenGuard)

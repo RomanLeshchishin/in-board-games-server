@@ -19,8 +19,8 @@ import { Role } from '@prisma/client';
 import { RoleGuard } from '../guards/role.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
-import { TopicEntity } from './entities/topic.entity';
-import { TopicManyEntity } from './entities/topic-many.entity';
+import { TopicEntity } from './entity/topic.entity';
+import { TopicManyEntity } from './entity/topic-many.entity';
 
 @ApiTags('topics')
 @UseGuards(AccessTokenGuard)
