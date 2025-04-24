@@ -74,56 +74,28 @@ model Form {
   freezeAt     DateTime?    @map("freeze_at")
   blockedAt    DateTime?    @map("blocked_at")
 
-  profile   Profile        @relation(fields: [userId], references: [userId])
-  interests FormInterest[] @relation("formInterests")
-  topics    FormTopic[]    @relation("formTopics")
-  games     FormGame[]     @relation("formGames")
+  profile Profile     @relation(fields: [userId], references: [userId])
+  models  FormModel[] @relation("formModels")
 
   @@map("forms")
 }
 
-model FormInterest {
-  id          String @id @default(uuid()) @db.Uuid
-  userId      String @map("user_id") @db.Uuid
-  interestId  String @map("interest_id") @db.Uuid
+model FormModel {
+  id        String        @id @default(uuid()) @db.Uuid
+  userId    String        @map("user_id") @db.Uuid
+  modelId   String        @map("model_id") @db.Uuid
+  modelType FormModelType @map("model_type")
 
-  form     Form     @relation("formInterests", fields: [userId], references: [userId])
-  interest Interest @relation("interestForms", fields: [interestId], references: [id])
+  form Form @relation("formModels", fields: [userId], references: [userId])
 
-  @@unique([userId, interestId], name: "userIdInterestId")
-  @@map("forms-interests")
-}
-
-model FormTopic {
-  id      String @id @default(uuid()) @db.Uuid
-  userId  String @map("user_id") @db.Uuid
-  topicId String @map("topic_id") @db.Uuid
-
-  form  Form  @relation("formTopics", fields: [userId], references: [userId])
-  topic Topic @relation("topicForms", fields: [topicId], references: [id])
-
-  @@unique([userId, topicId], name: "userIdTopicId")
-  @@map("forms-topics")
-}
-
-model FormGame {
-  id     String @id @default(uuid()) @db.Uuid
-  userId String @map("user_id") @db.Uuid
-  gameId String @map("topic_id") @db.Uuid
-
-  form Form @relation("formGames", fields: [userId], references: [userId])
-  game Game @relation("gameForms", fields: [gameId], references: [id])
-
-  @@unique([userId, gameId], name: "userIdGameId")
-  @@map("forms-games")
+  @@unique([userId, modelId, modelType], name: "userIdModelIdType")
+  @@map("forms-models")
 }
 
 model Interest {
   id    String @id @default(uuid()) @db.Uuid
   title String
   area  String
-
-  forms FormInterest[] @relation("interestForms")
 
   @@map("interests")
 }
@@ -134,7 +106,6 @@ model Topic {
   description String?
 
   games Game[]
-  forms FormTopic[] @relation("topicForms")
 
   @@map("topics")
 }
@@ -148,17 +119,16 @@ model Game {
   age                Int
 
   topic Topic      @relation(fields: [topicId], references: [id])
-  forms FormGame[] @relation("gameForms")
 
   @@map("games")
 }
 
 model File {
-  id        String    @id @default(uuid()) @db.Uuid
-  modelId   String    @map("model_id") @db.Uuid
-  modelType ModelType @map("model_type")
-  fileName  String    @map("file_name")
-  fileLink  String    @map("file_link")
+  id        String        @id @default(uuid()) @db.Uuid
+  modelId   String        @map("model_id") @db.Uuid
+  modelType FileModelType @map("model_type")
+  fileName  String        @map("file_name")
+  fileLink  String        @map("file_link")
 
   @@map("files")
 }
@@ -179,7 +149,7 @@ enum PeopleGender {
   FEMALE
 }
 
-enum ModelType {
+enum FileModelType {
   AVATAR
   FORM // protect
   COMMUNITY
@@ -187,4 +157,11 @@ enum ModelType {
   CHAT // protect
   MESSAGE // protect
   FEEDBACK
+}
+
+enum FormModelType {
+  INTEREST
+  TOPIC
+  GAME
+  COMMUNITIES
 }
