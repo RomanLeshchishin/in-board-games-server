@@ -90,6 +90,7 @@ model FormInterest {
   form     Form     @relation("formInterests", fields: [userId], references: [userId])
   interest Interest @relation("interestForms", fields: [interestId], references: [id])
 
+  @@unique([userId, interestId], name: "userIdInterestId")
   @@map("forms-interests")
 }
 
@@ -101,6 +102,7 @@ model FormTopic {
   form  Form  @relation("formTopics", fields: [userId], references: [userId])
   topic Topic @relation("topicForms", fields: [topicId], references: [id])
 
+  @@unique([userId, topicId], name: "userIdTopicId")
   @@map("forms-topics")
 }
 
@@ -112,6 +114,7 @@ model FormGame {
   form Form @relation("formGames", fields: [userId], references: [userId])
   game Game @relation("gameForms", fields: [gameId], references: [id])
 
+  @@unique([userId, gameId], name: "userIdGameId")
   @@map("forms-games")
 }
 
