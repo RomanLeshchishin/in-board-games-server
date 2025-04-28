@@ -16,7 +16,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { RoleGuard } from '../guards/role.guard';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { TopicManyEntity } from '../topics/entity/topic-many.entity';
 import { CreateGameDto } from './dto/create-game.dto';
 import { GameEntity } from './entity/game.entity';

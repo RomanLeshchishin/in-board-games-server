@@ -21,7 +21,6 @@ import { Role } from '@prisma/client';
 import { RoleGuard } from '../guards/role.guard';
 import { InterestEntity } from './entity/interest.entity';
 import { InterestManyEntity } from './entity/interest-many.entity';
-import { MFile } from '../files/MFile.class';
 
 @ApiTags('interests')
 @UseGuards(AccessTokenGuard)
