@@ -24,6 +24,7 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   profile Profile?
+  form    Form?
 
   @@map("users")
 }
@@ -41,7 +42,6 @@ model Profile {
 
   saverProfiles   ProfilePeople[] @relation("saverProfiles") // кто сохранил к себе профили
   savedByProfiles ProfilePeople[] @relation("savedByProfiles") // тот кто был сохранён другими профилями
-  form            Form?
 
   @@map("profiles")
 }
@@ -74,8 +74,8 @@ model Form {
   freezeAt     DateTime?    @map("freeze_at")
   blockedAt    DateTime?    @map("blocked_at")
 
-  profile Profile     @relation(fields: [userId], references: [userId])
-  models  FormModel[] @relation("formModels")
+  user   User        @relation(fields: [userId], references: [id])
+  models FormModel[] @relation("formModels")
 
   @@map("forms")
 }

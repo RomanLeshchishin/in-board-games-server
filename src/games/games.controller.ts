@@ -16,7 +16,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { RoleGuard } from '../guards/role.guard';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { TopicManyEntity } from '../topics/entity/topic-many.entity';
 import { CreateGameDto } from './dto/create-game.dto';
 import { GameEntity } from './entity/game.entity';
@@ -41,7 +41,7 @@ export class GamesController {
   @HttpCode(200)
   @Roles(Role.ADMIN)
   @UseGuards(RoleGuard)
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ type: TopicManyEntity })
   async CreateMany(@UploadedFile() file: Express.Multer.File) {
@@ -58,7 +58,7 @@ export class GamesController {
     return this.gamesService.findAll();
   }
 
-  @Get('/:id')
+  @Get('/id/:id')
   @ApiOkResponse({ type: GetGameEntity })
   getById(@Param('id') id: string) {
     return this.gamesService.findById(id);

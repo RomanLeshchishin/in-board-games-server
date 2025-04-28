@@ -1,13 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ModelType } from '@prisma/client';
+import { FileModelType } from '@prisma/client';
 
 @Injectable()
 export class ModelTypeGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const modelTypes = this.reflector.get<ModelType[]>('modelTypes', context.getHandler());
+    const modelTypes = this.reflector.get<FileModelType[]>('modelTypes', context.getHandler());
 
     if (!modelTypes) {
       return true;

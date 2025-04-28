@@ -1,10 +1,10 @@
-import { FileModelType } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { FormModelType } from '@prisma/client';
 
-export class GetFilesDto {
+export class FormModelDto {
   @ApiProperty()
   modelId: string;
 
   @ApiProperty()
-  modelType: FileModelType;
+  modelType: FormModelType;
 }
