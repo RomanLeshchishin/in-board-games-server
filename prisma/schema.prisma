@@ -23,8 +23,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  profile Profile?
-  form    Form?
+  profile   Profile?
+  form      Form?
+  community Community[]
 
   @@map("users")
 }
@@ -90,6 +91,39 @@ model FormModel {
 
   @@unique([userId, modelId, modelType], name: "userIdModelIdType")
   @@map("forms-models")
+}
+
+model Community {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  title       String
+  description String?
+  avatar      String?
+  priceList   Json?     @map("price_list")
+  shedule     Json?
+  blockedAt   DateTime? @map("blocked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user   User    @relation(fields: [userId], references: [id])
+  events Event[]
+
+  @@map("communities")
+}
+
+model Event {
+  id          String    @id @default(uuid()) @db.Uuid
+  communityId String    @unique @map("community_id") @db.Uuid
+  title       String
+  date        DateTime
+  place       String
+  blockedAt   DateTime? @map("blocked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  community Community @relation(fields: [communityId], references: [id])
+
+  @@map("events")
 }
 
 model Interest {

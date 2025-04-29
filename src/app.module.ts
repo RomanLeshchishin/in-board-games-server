@@ -12,6 +12,8 @@ import { InterestsModule } from './interests/interests.module';
 import { TopicsModule } from './topics/topics.module';
 import { GamesModule } from './games/games.module';
 import { FormModelsModule } from './form-models/form-models.module';
+import { CommunitiesModule } from './communities/communities.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { FormModelsModule } from './form-models/form-models.module';
     TopicsModule,
     GamesModule,
     FormModelsModule,
+    CommunitiesModule,
+    EventsModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })
