@@ -21,5 +21,11 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
+
+  return app.getHttpAdapter().getInstance();
 }
-bootstrap();
+
+module.exports = bootstrap().catch(err => {
+  console.error('Failed to start Nest application:', err);
+  process.exit(1);
+});
