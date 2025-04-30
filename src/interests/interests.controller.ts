@@ -24,7 +24,7 @@ import { InterestManyEntity } from './entity/interest-many.entity';
 
 @ApiTags('interests')
 @UseGuards(AccessTokenGuard)
-@Controller('api/interests')
+@Controller('interests')
 export class InterestsController {
   constructor(private readonly interestsService: InterestsService) {}
 

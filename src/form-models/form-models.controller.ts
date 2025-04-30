@@ -12,7 +12,7 @@ import { FormModelEntity } from './entity/form-model.entity';
 
 @ApiTags('form-models')
 @UseGuards(AccessTokenGuard)
-@Controller('api/form-models')
+@Controller('form-models')
 export class FormModelsController {
   constructor(private readonly formModelsService: FormModelsService) {}
 

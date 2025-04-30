@@ -13,7 +13,7 @@ import { ProfileService } from '../profile/profile.service';
 
 @ApiTags('profile-people')
 @UseGuards(AccessTokenGuard)
-@Controller('api/profile-people')
+@Controller('profile-people')
 export class ProfilePeopleController {
   constructor(
     private readonly profilePeopleService: ProfilePeopleService,

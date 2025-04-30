@@ -10,7 +10,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { User } from '../decorators/user.decorator';
 
 @ApiTags('users')
-@Controller('api/users')
+@Controller('users')
 @UseGuards(AccessTokenGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

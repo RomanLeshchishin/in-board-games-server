@@ -26,7 +26,7 @@ import { ModelTypeGuard } from '../guards/modelType.guard';
 import { GetAuthFilesDto } from './dto/getAuthFiles.dto';
 
 @ApiTags('files')
-@Controller('api/files')
+@Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 

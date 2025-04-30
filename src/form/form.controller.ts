@@ -14,7 +14,7 @@ import { FormAdvancedEntity } from './entity/form-advanced.entity';
 
 @ApiTags('form')
 @UseGuards(AccessTokenGuard)
-@Controller('api/form')
+@Controller('form')
 export class FormController {
   constructor(private readonly formService: FormService) {}
 

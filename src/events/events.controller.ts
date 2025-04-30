@@ -6,7 +6,7 @@ import { RoleGuard } from '../guards/role.guard';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 
 @UseGuards(AccessTokenGuard)
-@Controller('api/events')
+@Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 

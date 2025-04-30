@@ -9,7 +9,7 @@ import { ProfileEntity } from './entity/profile.entity';
 import { User } from '../decorators/user.decorator';
 
 @ApiTags('profile')
-@Controller('api/profile')
+@Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 

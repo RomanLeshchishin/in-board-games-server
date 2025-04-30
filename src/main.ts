@@ -8,6 +8,8 @@ async function bootstrap() {
     logger: ['error', 'warn', 'debug'],
   });
 
+  app.setGlobalPrefix('api');
+
   // Middleware и конфигурация
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
