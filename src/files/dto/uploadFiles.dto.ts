@@ -1,4 +1,4 @@
-import { ModelType } from '@prisma/client';
+import { FileModelType } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UploadFilesDto {
@@ -6,5 +6,5 @@ export class UploadFilesDto {
   modelId: string;
 
   @ApiProperty()
-  modelType: ModelType;
+  modelType: FileModelType;
 }

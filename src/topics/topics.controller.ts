@@ -17,7 +17,7 @@ import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { RoleGuard } from '../guards/role.guard';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { TopicEntity } from './entity/topic.entity';
 import { TopicManyEntity } from './entity/topic-many.entity';
@@ -40,7 +40,7 @@ export class TopicsController {
   @HttpCode(200)
   @Roles(Role.ADMIN)
   @UseGuards(RoleGuard)
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ type: TopicManyEntity })
   async CreateMany(@UploadedFile() file: Express.Multer.File) {
@@ -57,7 +57,7 @@ export class TopicsController {
     return this.topicsService.findAll();
   }
 
-  @Get('/:id')
+  @Get('/id/:id')
   @ApiOkResponse({ type: TopicEntity })
   getById(@Param('id') id: string) {
     return this.topicsService.findById(id);

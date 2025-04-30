@@ -1,15 +1,21 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateFormDto } from './dto/create-form.dto';
-import { FormEntity } from './entity/form.entity';
+import { FormBasicEntity } from './entity/form-basic.entity';
 import { UpdateFreezeAtDto } from './dto/update-freeze-at.dto';
 import { UpdateBlockedAtDto } from './dto/update-blocked-at.dto';
+import { FormModelsService } from '../form-models/form-models.service';
+import { FormModelType } from '@prisma/client';
+import { FormAdvancedEntity } from './entity/form-advanced.entity';
+import { CreateFormDto } from './dto/create-form.dto';
 
 @Injectable()
 export class FormService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly formModelsService: FormModelsService,
+  ) {}
 
-  async create(dto: CreateFormDto, userId: string): Promise<FormEntity> {
+  async create(dto: CreateFormDto, userId: string): Promise<FormBasicEntity> {
     const form = await this.prismaService.form.findUnique({ where: { userId } });
 
     if (form) {
@@ -19,27 +25,41 @@ export class FormService {
     return this.prismaService.form.create({ data: { userId, ...dto } });
   }
 
-  findAll(): Promise<FormEntity[]> {
+  findAll(): Promise<FormBasicEntity[]> {
     return this.prismaService.form.findMany();
   }
 
-  findAllNoFreezeAndBlocked(): Promise<FormEntity[]> {
+  findAllNoFreezeAndBlocked(): Promise<FormBasicEntity[]> {
     return this.prismaService.form.findMany({ where: { freezeAt: null, blockedAt: null } });
   }
 
-  findById(userId: string): Promise<FormEntity | null> {
-    return this.prismaService.form.findUnique({ where: { userId } });
+  async findById(userId: string): Promise<FormAdvancedEntity> {
+    const form = await this.prismaService.form.findUnique({ where: { userId } });
+    const interests = await this.formModelsService.findByUserId(userId, FormModelType.INTEREST);
+    const topics = await this.formModelsService.findByUserId(userId, FormModelType.TOPIC);
+    const games = await this.formModelsService.findByUserId(userId, FormModelType.GAME);
+
+    if (form) {
+      return {
+        ...form,
+        interests,
+        topics,
+        games,
+      };
+    }
+
+    throw new NotFoundException('форма не найдена');
   }
 
-  update(dto: Partial<CreateFormDto>, userId: string): Promise<FormEntity> {
+  update(dto: Partial<CreateFormDto>, userId: string): Promise<FormBasicEntity> {
     return this.prismaService.form.update({ where: { userId }, data: dto });
   }
 
-  updateFreezeAt(dto: UpdateFreezeAtDto, userId: string): Promise<FormEntity> {
+  updateFreezeAt(dto: UpdateFreezeAtDto, userId: string): Promise<FormBasicEntity> {
     return this.prismaService.form.update({ where: { userId }, data: dto });
   }
 
-  updateBlockedAt(dto: UpdateBlockedAtDto, userId: string): Promise<FormEntity> {
+  updateBlockedAt(dto: UpdateBlockedAtDto, userId: string): Promise<FormBasicEntity> {
     return this.prismaService.form.update({ where: { userId }, data: dto });
   }
 

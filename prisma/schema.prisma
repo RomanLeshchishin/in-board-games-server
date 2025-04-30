@@ -23,7 +23,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  profile Profile?
+  profile   Profile?
+  form      Form?
+  community Community[]
 
   @@map("users")
 }
@@ -41,7 +43,6 @@ model Profile {
 
   saverProfiles   ProfilePeople[] @relation("saverProfiles") // кто сохранил к себе профили
   savedByProfiles ProfilePeople[] @relation("savedByProfiles") // тот кто был сохранён другими профилями
-  form            Form?
 
   @@map("profiles")
 }
@@ -74,53 +75,61 @@ model Form {
   freezeAt     DateTime?    @map("freeze_at")
   blockedAt    DateTime?    @map("blocked_at")
 
-  profile   Profile        @relation(fields: [userId], references: [userId])
-  interests FormInterest[] @relation("formInterests")
-  topics    FormTopic[]    @relation("formTopics")
-  games     FormGame[]     @relation("formGames")
+  user   User        @relation(fields: [userId], references: [id])
+  models FormModel[] @relation("formModels")
 
   @@map("forms")
 }
 
-model FormInterest {
-  id          String @id @default(uuid()) @db.Uuid
-  userId      String @map("user_id") @db.Uuid
-  interestId  String @map("interest_id") @db.Uuid
+model FormModel {
+  id        String        @id @default(uuid()) @db.Uuid
+  userId    String        @map("user_id") @db.Uuid
+  modelId   String        @map("model_id") @db.Uuid
+  modelType FormModelType @map("model_type")
 
-  form     Form     @relation("formInterests", fields: [userId], references: [userId])
-  interest Interest @relation("interestForms", fields: [interestId], references: [id])
+  form Form @relation("formModels", fields: [userId], references: [userId])
 
-  @@map("forms-interests")
+  @@unique([userId, modelId, modelType], name: "userIdModelIdType")
+  @@map("forms-models")
 }
 
-model FormTopic {
-  id      String @id @default(uuid()) @db.Uuid
-  userId  String @map("user_id") @db.Uuid
-  topicId String @map("topic_id") @db.Uuid
+model Community {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  title       String
+  description String?
+  avatar      String?
+  priceList   Json?     @map("price_list")
+  shedule     Json?
+  blockedAt   DateTime? @map("blocked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  form  Form  @relation("formTopics", fields: [userId], references: [userId])
-  topic Topic @relation("topicForms", fields: [topicId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
+  events Event[]
 
-  @@map("forms-topics")
+  @@map("communities")
 }
 
-model FormGame {
-  id     String @id @default(uuid()) @db.Uuid
-  userId String @map("user_id") @db.Uuid
-  gameId String @map("topic_id") @db.Uuid
+model Event {
+  id          String    @id @default(uuid()) @db.Uuid
+  communityId String    @unique @map("community_id") @db.Uuid
+  title       String
+  date        DateTime
+  place       String
+  blockedAt   DateTime? @map("blocked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  form Form @relation("formGames", fields: [userId], references: [userId])
-  game Game @relation("gameForms", fields: [gameId], references: [id])
+  community Community @relation(fields: [communityId], references: [id])
 
-  @@map("forms-games")
+  @@map("events")
 }
 
 model Interest {
   id    String @id @default(uuid()) @db.Uuid
   title String
   area  String
-
-  forms FormInterest[] @relation("interestForms")
 
   @@map("interests")
 }
@@ -131,7 +140,6 @@ model Topic {
   description String?
 
   games Game[]
-  forms FormTopic[] @relation("topicForms")
 
   @@map("topics")
 }
@@ -145,17 +153,16 @@ model Game {
   age                Int
 
   topic Topic      @relation(fields: [topicId], references: [id])
-  forms FormGame[] @relation("gameForms")
 
   @@map("games")
 }
 
 model File {
-  id        String    @id @default(uuid()) @db.Uuid
-  modelId   String    @map("model_id") @db.Uuid
-  modelType ModelType @map("model_type")
-  fileName  String    @map("file_name")
-  fileLink  String    @map("file_link")
+  id        String        @id @default(uuid()) @db.Uuid
+  modelId   String        @map("model_id") @db.Uuid
+  modelType FileModelType @map("model_type")
+  fileName  String        @map("file_name")
+  fileLink  String        @map("file_link")
 
   @@map("files")
 }
@@ -176,7 +183,7 @@ enum PeopleGender {
   FEMALE
 }
 
-enum ModelType {
+enum FileModelType {
   AVATAR
   FORM // protect
   COMMUNITY
@@ -184,4 +191,11 @@ enum ModelType {
   CHAT // protect
   MESSAGE // protect
   FEEDBACK
+}
+
+enum FormModelType {
+  INTEREST
+  TOPIC
+  GAME
+  COMMUNITIES
 }

@@ -1,7 +1,7 @@
-import { PeopleGender } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { PeopleGender } from '@prisma/client';
 
-export class FormEntity {
+export class FormAdvancedEntity {
   @ApiProperty()
   id: string;
 
@@ -37,4 +37,13 @@ export class FormEntity {
 
   @ApiProperty()
   blockedAt: Date | null;
+
+  @ApiProperty()
+  interests: string[];
+
+  @ApiProperty()
+  topics: string[];
+
+  @ApiProperty()
+  games: string[];
 }

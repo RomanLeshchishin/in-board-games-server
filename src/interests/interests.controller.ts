@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { InterestsService } from './interests.service';
 import { CreateInterestDto } from './dto/create-interest.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { Roles } from '../decorators/roles.decorator';
@@ -40,7 +40,7 @@ export class InterestsController {
   @HttpCode(200)
   @Roles(Role.ADMIN)
   @UseGuards(RoleGuard)
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ type: InterestManyEntity })
   async CreateMany(@UploadedFile() file: Express.Multer.File) {
@@ -57,7 +57,7 @@ export class InterestsController {
     return this.interestsService.findAll();
   }
 
-  @Get('/:id')
+  @Get('/id/:id')
   @ApiOkResponse({ type: InterestEntity })
   getById(@Param('id') id: string) {
     return this.interestsService.findById(id);

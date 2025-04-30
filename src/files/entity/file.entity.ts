@@ -1,4 +1,4 @@
-import { ModelType } from '@prisma/client';
+import { FileModelType } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class FileEntity {
@@ -9,7 +9,7 @@ export class FileEntity {
   modelId: string;
 
   @ApiProperty()
-  modelType: ModelType;
+  modelType: FileModelType;
 
   @ApiProperty()
   fileName: string;

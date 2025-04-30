@@ -1,4 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
-import { ModelType } from '@prisma/client';
+import { FileModelType } from '@prisma/client';
 
-export const ModelTypes = (...modelTypes: ModelType[]) => SetMetadata('modelTypes', modelTypes);
+export const ModelTypes = (...modelTypes: FileModelType[]) => SetMetadata('modelTypes', modelTypes);

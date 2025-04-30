@@ -7,5 +7,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [InterestsController],
   providers: [InterestsService],
+  exports: [InterestsService],
 })
 export class InterestsModule {}

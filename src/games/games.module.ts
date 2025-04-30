@@ -7,5 +7,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [GamesController],
   providers: [GamesService],
+  exports: [GamesService],
 })
 export class GamesModule {}
