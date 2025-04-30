@@ -25,7 +25,7 @@ import { AccessTokenGuard } from '../guards/accessToken.guard';
 
 @ApiTags('games')
 @UseGuards(AccessTokenGuard)
-@Controller('games')
+@Controller('api/games')
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
 

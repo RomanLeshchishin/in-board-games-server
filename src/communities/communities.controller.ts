@@ -6,7 +6,7 @@ import { Role } from '@prisma/client';
 import { RoleGuard } from '../guards/role.guard';
 
 @UseGuards(AccessTokenGuard)
-@Controller('communities')
+@Controller('api/communities')
 export class CommunitiesController {
   constructor(private readonly communityService: CommunitiesService) {}
 

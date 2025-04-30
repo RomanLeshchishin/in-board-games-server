@@ -24,7 +24,7 @@ import { TopicManyEntity } from './entity/topic-many.entity';
 
 @ApiTags('topics')
 @UseGuards(AccessTokenGuard)
-@Controller('topics')
+@Controller('api/topics')
 export class TopicsController {
   constructor(private readonly topicsService: TopicsService) {}
 

@@ -1,16 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'debug'],
+  });
 
+  // Middleware и конфигурация
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
 
-  app.use(express.json());
-
+  // Swagger документация
   const config = new DocumentBuilder()
     .setTitle('Сервер по настольным играм')
     .setDescription('Документация к API')
@@ -18,14 +20,22 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Запуск сервера
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application is running on port ${port}`);
 
-  return app.getHttpAdapter().getInstance();
+  return app;
 }
 
-module.exports = bootstrap().catch(err => {
-  console.error('Failed to start Nest application:', err);
-  process.exit(1);
-});
+// Экспорт для Vercel
+const server = bootstrap()
+  .then(app => app.getHttpAdapter().getInstance())
+  .catch(err => {
+    console.error('Failed to start Nest application:', err);
+    process.exit(1);
+  });
+
+module.exports = server;

@@ -12,7 +12,7 @@ import { AuthEntity } from './entity/auth.entity';
 import { AdminRegisterGuard } from '../guards/adminRegister.guard';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
