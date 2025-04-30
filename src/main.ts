@@ -10,6 +10,13 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .get('/', (req, res) => {
+      res.status(200).json({ status: 'ok' });
+    });
+
   // Middleware и конфигурация
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
