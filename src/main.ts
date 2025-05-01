@@ -17,9 +17,8 @@ async function bootstrap() {
       res.status(200).json({ status: 'ok' });
     });
 
-  // Middleware и конфигурация
+  // Middleware
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
 
   // Swagger документация
   const config = new DocumentBuilder()
@@ -39,12 +38,4 @@ async function bootstrap() {
   return app;
 }
 
-// Экспорт для Vercel
-const server = bootstrap()
-  .then(app => app.getHttpAdapter().getInstance())
-  .catch(err => {
-    console.error('Failed to start Nest application:', err);
-    process.exit(1);
-  });
-
-module.exports = server;
+bootstrap();
