@@ -7,6 +7,10 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+# генерация Prisma Client
+RUN npx prisma generate
+
 RUN npm run build
 
 # Stage 2: Run the app
