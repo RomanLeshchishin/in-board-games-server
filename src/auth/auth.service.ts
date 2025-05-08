@@ -99,7 +99,7 @@ export class AuthService {
     res.cookie(title, value, {
       httpOnly: true,
       secure: false,
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000, //7d
       path: '/',
     });
