@@ -80,7 +80,7 @@ export class AuthService {
       { userId, role },
       {
         secret: this.configService.getOrThrow('JWT_ACCESS_SECRET'),
-        expiresIn: '4h',
+        expiresIn: '10m',
       },
     );
 
