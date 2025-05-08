@@ -36,6 +36,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @UseGuards(AccessTokenGuard)
   @ApiCreatedResponse({ type: AuthEntity })
   login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.login(loginDto, res);
