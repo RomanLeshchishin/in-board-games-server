@@ -20,6 +20,11 @@ async function bootstrap() {
   // Middleware
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
+
   // Swagger документация
   const config = new DocumentBuilder()
     .setTitle('Сервер по настольным играм')
