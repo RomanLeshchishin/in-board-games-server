@@ -2,9 +2,16 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const Cookies = createParamDecorator((data: string, ctx: ExecutionContext) => {
   const request = ctx.switchToHttp().getRequest();
-  const cookies = request.headers.cookie;
-  if (cookies) {
-    return cookies.split('=')[1].trim();
-  }
-  return null;
+  const cookieHeader = request.headers.cookie;
+
+  if (!cookieHeader) return null;
+
+  const cookies = Object.fromEntries(
+    cookieHeader
+      .split(';')
+      .map(cookie => cookie.trim().split('='))
+      .map(([key, ...val]) => [key, val.join('=')]), // на случай, если в значении есть "="
+  );
+
+  return cookies[data]; // data — это имя куки
 });

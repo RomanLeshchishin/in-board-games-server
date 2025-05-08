@@ -14,9 +14,15 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          const cookies = request.headers.cookie;
-          if (cookies) {
-            return cookies.split('=')[1].trim();
+          const cookieHeader = request.headers.cookie;
+          if (cookieHeader) {
+            const cookies = Object.fromEntries(
+              cookieHeader
+                .split(';')
+                .map(c => c.trim().split('='))
+                .map(([key, ...val]) => [key, val.join('=')]),
+            );
+            return cookies['refreshToken'] || null;
           }
           return null;
         },
@@ -29,7 +35,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
     const user = await this.usersService.findById(payload.userId);
 
     if (!user) {
-      return new UnauthorizedException();
+      throw new UnauthorizedException();
     }
 
     return payload;
