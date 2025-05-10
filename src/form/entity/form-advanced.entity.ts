@@ -27,9 +27,6 @@ export class FormAdvancedEntity {
   address: any | null;
 
   @ApiProperty()
-  about: string | null;
-
-  @ApiProperty()
   institute: string | null;
 
   @ApiProperty()
