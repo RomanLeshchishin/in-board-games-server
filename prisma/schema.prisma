@@ -31,13 +31,12 @@ model User {
 }
 
 model Profile {
-  id          String    @id @default(uuid()) @db.Uuid
-  userId      String    @unique @map("user_id") @db.Uuid
-  user        User      @relation(fields: [userId], references: [id])
-  avatar      String?   @unique @db.Uuid
-  phoneNumber BigInt?   @map("phone_number")
-  patronymic  String?
-  birthday    DateTime?
+  id     String  @id @default(uuid()) @db.Uuid
+  userId String  @unique @map("user_id") @db.Uuid
+  user   User    @relation(fields: [userId], references: [id])
+  avatar String? @unique @db.Uuid
+  age    Int?
+  about  String?
   // subscriptions String[]
   // savedEvents   String[]       @map("saved_events")
 
@@ -63,11 +62,12 @@ model ProfilePeople {
 model Form {
   id           String       @id @default(uuid()) @db.Uuid
   userId       String       @unique @map("user_id") @db.Uuid
-  age          Int
+  birthday     DateTime
   gender       PeopleGender
   favoriteTime Json[]       @map("favorite_time")
+  patronymic   String?
+  phoneNumber  BigInt?      @map("phone_number")
   address      Json?
-  about        String?
   institute    String?
   course       Int?
   direction    String?
@@ -152,7 +152,7 @@ model Game {
   numberParticipants Int
   age                Int
 
-  topic Topic      @relation(fields: [topicId], references: [id])
+  topic Topic @relation(fields: [topicId], references: [id])
 
   @@map("games")
 }

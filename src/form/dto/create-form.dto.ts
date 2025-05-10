@@ -3,13 +3,19 @@ import { PeopleGender } from '@prisma/client';
 
 export class CreateFormDto {
   @ApiProperty()
-  age: number;
+  birthday: Date;
 
   @ApiProperty()
   gender: PeopleGender;
 
   @ApiProperty()
   favoriteTime: any[];
+
+  @ApiProperty()
+  patronymic?: string;
+
+  @ApiProperty()
+  phoneNumber?: bigint;
 
   @ApiProperty()
   address?: any;

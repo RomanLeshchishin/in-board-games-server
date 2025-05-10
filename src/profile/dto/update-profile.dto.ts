@@ -5,10 +5,10 @@ export class UpdateProfileDto {
   avatar: string;
 
   @ApiProperty()
-  phoneNumber: bigint;
+  age: number;
 
   @ApiProperty()
-  patronymic: string;
+  about: string;
 
   @ApiProperty()
   birthday: Date;

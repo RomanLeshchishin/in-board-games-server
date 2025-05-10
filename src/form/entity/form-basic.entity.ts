@@ -9,13 +9,19 @@ export class FormBasicEntity {
   userId: string;
 
   @ApiProperty()
-  age: number;
+  birthday: Date;
 
   @ApiProperty()
   gender: PeopleGender;
 
   @ApiProperty()
   favoriteTime: any[];
+
+  @ApiProperty()
+  patronymic: string | null;
+
+  @ApiProperty()
+  phoneNumber: bigint | null;
 
   @ApiProperty()
   address: any | null;

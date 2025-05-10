@@ -8,11 +8,8 @@ export class ProfileEntity {
   avatar: string | null;
 
   @ApiProperty()
-  phoneNumber: bigint | null;
+  age: number | null;
 
   @ApiProperty()
-  patronymic: string | null;
-
-  @ApiProperty()
-  birthday: Date | null;
+  about: string | null;
 }
