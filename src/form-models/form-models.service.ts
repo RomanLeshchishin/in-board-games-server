@@ -51,9 +51,9 @@ export class FormModelsService {
 
     if (formModels.length !== 0) {
       switch (modelType) {
-        case 'COMMUNITIES':
+        case FormModelType.COMMUNITY:
           return [];
-        case 'GAME':
+        case FormModelType.GAME:
           return await Promise.all(
             formModels.map(async model => {
               const game = await this.gamesService.findById(model.modelId);
@@ -64,7 +64,7 @@ export class FormModelsService {
               return 'not found';
             }),
           );
-        case 'INTEREST':
+        case FormModelType.INTEREST:
           return await Promise.all(
             formModels.map(async model => {
               const interest = await this.interestsService.findById(model.modelId);
@@ -75,7 +75,7 @@ export class FormModelsService {
               return 'not found';
             }),
           );
-        case 'TOPIC':
+        case FormModelType.TOPIC:
           return await Promise.all(
             formModels.map(async model => {
               const topic = await this.topicsService.findById(model.modelId);
@@ -94,13 +94,13 @@ export class FormModelsService {
 
   findByModelIdType(modelId: string, modelType: FormModelType) {
     switch (modelType) {
-      case 'COMMUNITIES':
+      case FormModelType.COMMUNITY:
         return [];
-      case 'GAME':
+      case FormModelType.GAME:
         return this.gamesService.findById(modelId);
-      case 'INTEREST':
+      case FormModelType.INTEREST:
         return this.interestsService.findById(modelId);
-      case 'TOPIC':
+      case FormModelType.TOPIC:
         return this.topicsService.findById(modelId);
     }
   }

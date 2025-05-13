@@ -19,7 +19,7 @@ export class ProfileController {
     return this.profileService.findById(id);
   }
 
-  getById() {}
+  //getById() {}
 
   @Get('all')
   @ApiOkResponse({ type: ProfileEntity, isArray: true })
