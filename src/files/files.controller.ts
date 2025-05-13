@@ -14,16 +14,16 @@ import {
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { UploadFilesDto } from './dto/uploadFiles.dto';
-import { GetFilesDto } from './dto/getFiles.dto';
+import { UploadFilesDto } from './dto/upload-files.dto';
+import { GetFilesDto } from './dto/get-files.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { FileEntity } from './entity/file.entity';
 import { UploadFilesEntity } from './entity/uploadFiles.entity';
-import { GetFileDto } from './dto/getFile.dto';
+import { GetFileDto } from './dto/get-file.dto';
 import { ModelTypes } from '../decorators/modelTypes.decorator';
 import { ModelTypeGuard } from '../guards/modelType.guard';
-import { GetAuthFilesDto } from './dto/getAuthFiles.dto';
+import { GetAuthFilesDto } from './dto/get-auth-files.dto';
 
 @ApiTags('files')
 @Controller('files')

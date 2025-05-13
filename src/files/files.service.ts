@@ -4,12 +4,12 @@ import { MFile } from './MFile.class';
 import sharp from 'sharp';
 import EasyYandexS3 from 'easy-yandex-s3';
 import { ConfigService } from '@nestjs/config';
-import { UploadFilesDto } from './dto/uploadFiles.dto';
+import { UploadFilesDto } from './dto/upload-files.dto';
 import { UploadFilesEntity } from './entity/uploadFiles.entity';
-import { GetFilesDto } from './dto/getFiles.dto';
+import { GetFilesDto } from './dto/get-files.dto';
 import { FileEntity } from './entity/file.entity';
-import { GetAuthFilesDto } from './dto/getAuthFiles.dto';
-import { GetFileDto } from './dto/getFile.dto';
+import { GetAuthFilesDto } from './dto/get-auth-files.dto';
+import { GetFileDto } from './dto/get-file.dto';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
