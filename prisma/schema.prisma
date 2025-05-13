@@ -197,5 +197,5 @@ enum FormModelType {
   INTEREST
   TOPIC
   GAME
-  COMMUNITIES
+  COMMUNITY
 }

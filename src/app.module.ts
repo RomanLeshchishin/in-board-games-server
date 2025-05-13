@@ -14,6 +14,7 @@ import { GamesModule } from './games/games.module';
 import { FormModelsModule } from './form-models/form-models.module';
 import { CommunitiesModule } from './communities/communities.module';
 import { EventsModule } from './events/events.module';
+import { FiltersModule } from './filters/filters.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { EventsModule } from './events/events.module';
     FormModelsModule,
     CommunitiesModule,
     EventsModule,
+    FiltersModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })
