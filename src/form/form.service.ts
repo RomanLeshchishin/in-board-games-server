@@ -51,6 +51,17 @@ export class FormService {
     throw new NotFoundException('форма не найдена');
   }
 
+  async findFormInterestsById(userId: string) {
+    const form = await this.prismaService.form.findUnique({ where: { userId } });
+    const interests = await this.formModelsService.findByUserId(userId, FormModelType.INTEREST);
+
+    if (form) {
+      return { interests };
+    }
+
+    throw new NotFoundException('форма с интересами не найдена');
+  }
+
   update(dto: Partial<CreateFormDto>, userId: string): Promise<FormBasicEntity> {
     return this.prismaService.form.update({ where: { userId }, data: dto });
   }
