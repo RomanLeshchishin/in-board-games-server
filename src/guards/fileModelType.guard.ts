@@ -3,20 +3,20 @@ import { Reflector } from '@nestjs/core';
 import { FileModelType } from '@prisma/client';
 
 @Injectable()
-export class ModelTypeGuard implements CanActivate {
+export class FileModelTypeGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const modelTypes = this.reflector.get<FileModelType[]>('modelTypes', context.getHandler());
+    const fileModelTypes = this.reflector.get<FileModelType[]>('fileModelTypes', context.getHandler());
 
-    if (!modelTypes) {
+    if (!fileModelTypes) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const queryParams = request.query;
 
-    const hasModelType = modelTypes.some(modelType => modelType === queryParams.modelType);
+    const hasModelType = fileModelTypes.some(modelType => modelType === queryParams.modelType);
     if (!hasModelType) {
       throw new UnauthorizedException();
     }

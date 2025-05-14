@@ -21,9 +21,10 @@ import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { FileEntity } from './entity/file.entity';
 import { UploadFilesEntity } from './entity/uploadFiles.entity';
 import { GetFileDto } from './dto/get-file.dto';
-import { ModelTypes } from '../decorators/modelTypes.decorator';
-import { ModelTypeGuard } from '../guards/modelType.guard';
+import { FileModelTypes } from '../decorators/fileModelTypes.decorator';
+import { FileModelTypeGuard } from '../guards/fileModelType.guard';
 import { GetAuthFilesDto } from './dto/get-auth-files.dto';
+import { FileModelType } from '@prisma/client';
 
 @ApiTags('files')
 @Controller('files')
@@ -42,9 +43,9 @@ export class FilesController {
   }
 
   @Get('single/')
-  @UseGuards(ModelTypeGuard)
+  @UseGuards(FileModelTypeGuard)
   @ApiOkResponse({ type: FileEntity })
-  @ModelTypes('AVATAR', 'COMMUNITY', 'EVENT', 'FEEDBACK')
+  @FileModelTypes(FileModelType.AVATAR, FileModelType.COMMUNITY, FileModelType.EVENT, FileModelType.FEEDBACK)
   getNoAuthFileById(@Query() getFileDto: GetFileDto) {
     return this.filesService.findFileByIdAndModelType(getFileDto);
   }
@@ -57,9 +58,9 @@ export class FilesController {
   }
 
   @Get('all/')
-  @UseGuards(ModelTypeGuard)
+  @UseGuards(FileModelTypeGuard)
   @ApiOkResponse({ type: FileEntity, isArray: true })
-  @ModelTypes('AVATAR', 'COMMUNITY', 'EVENT', 'FEEDBACK')
+  @FileModelTypes(FileModelType.AVATAR, FileModelType.COMMUNITY, FileModelType.EVENT, FileModelType.FEEDBACK)
   getNoAuthFilesByModelId(@Query() getFilesDto: GetFilesDto) {
     return this.filesService.findFilesByModelId(getFilesDto);
   }
