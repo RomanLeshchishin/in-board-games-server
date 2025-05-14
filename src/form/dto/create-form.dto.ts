@@ -3,6 +3,9 @@ import { PeopleGender } from '@prisma/client';
 
 export class CreateFormDto {
   @ApiProperty()
+  profileId: string;
+
+  @ApiProperty()
   birthday: Date;
 
   @ApiProperty()
