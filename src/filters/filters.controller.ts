@@ -4,7 +4,7 @@ import { FilterByManyDto } from './dto/filter-by-many.dto';
 import { AccessTokenGuard } from '../guards/accessToken.guard';
 import { FormModelTypeGuard } from '../guards/formModelType.guard';
 import { FormModelTypes } from '../decorators/formModelTypes.decorator';
-import { FilterFormModelType } from './filterFormModelType';
+import { FilterFormModelType } from './enums/filterFormModelType';
 
 @Controller('filters')
 export class FiltersController {

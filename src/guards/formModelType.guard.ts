@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { FilterFormModelType } from '../filters/filterFormModelType';
+import { FilterFormModelType } from '../filters/enums/filterFormModelType';
 
 export class FormModelTypeGuard implements CanActivate {
   constructor(private reflector: Reflector) {}

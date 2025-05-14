@@ -42,6 +42,7 @@ model Profile {
 
   saverProfiles   ProfilePeople[] @relation("saverProfiles") // кто сохранил к себе профили
   savedByProfiles ProfilePeople[] @relation("savedByProfiles") // тот кто был сохранён другими профилями
+  Form            Form[]
 
   @@map("profiles")
 }
@@ -62,6 +63,7 @@ model ProfilePeople {
 model Form {
   id           String       @id @default(uuid()) @db.Uuid
   userId       String       @unique @map("user_id") @db.Uuid
+  profileId    String       @unique @map("profile_id") @db.Uuid
   birthday     DateTime
   gender       PeopleGender
   favoriteTime Json[]       @map("favorite_time")
@@ -75,8 +77,9 @@ model Form {
   freezeAt     DateTime?    @map("freeze_at")
   blockedAt    DateTime?    @map("blocked_at")
 
-  user   User        @relation(fields: [userId], references: [id])
-  models FormModel[] @relation("formModels")
+  user    User        @relation(fields: [userId], references: [id])
+  profile Profile     @relation(fields: [profileId], references: [id])
+  models  FormModel[] @relation("formModels")
 
   @@map("forms")
 }
