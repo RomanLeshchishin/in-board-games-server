@@ -30,7 +30,7 @@ export class FiltersService {
     switch (filterModelType) {
       case FilterFormSimple.AGE:
         return forms.filter(
-          form => form.profile.age <= filter.split('-')[1] && form.profile.age >= filter.split('-')[0],
+          form => form.profile.age <= Number(filter.split('-')[1]) && form.profile.age >= Number(filter.split('-')[0]),
         );
       case FilterFormSimple.GENDER:
         return forms.filter(form => form.gender === filter);
