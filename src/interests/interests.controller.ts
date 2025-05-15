@@ -23,7 +23,6 @@ import { InterestEntity } from './entity/interest.entity';
 import { InterestManyEntity } from './entity/interest-many.entity';
 
 @ApiTags('interests')
-@UseGuards(AccessTokenGuard)
 @Controller('interests')
 export class InterestsController {
   constructor(private readonly interestsService: InterestsService) {}
@@ -31,6 +30,7 @@ export class InterestsController {
   @Post()
   @Roles(Role.ADMIN)
   @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
   @ApiCreatedResponse({ type: InterestEntity })
   create(@Body() createInterestDto: CreateInterestDto) {
     return this.interestsService.create(createInterestDto);
@@ -40,6 +40,7 @@ export class InterestsController {
   @HttpCode(200)
   @Roles(Role.ADMIN)
   @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ type: InterestManyEntity })
@@ -66,6 +67,7 @@ export class InterestsController {
   @Put('/:id')
   @Roles(Role.ADMIN)
   @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
   @ApiOkResponse({ type: InterestEntity })
   update(@Param('id') id: string, @Body() updateInterestDto: Partial<CreateInterestDto>) {
     return this.interestsService.update(id, updateInterestDto);
@@ -74,6 +76,7 @@ export class InterestsController {
   @Delete('/:id')
   @Roles(Role.ADMIN)
   @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
   @ApiOkResponse({ type: InterestEntity })
   delete(@Param('id') id: string) {
     return this.interestsService.delete(id);
