@@ -5,10 +5,14 @@ import { FilterFormAdvanced } from './enums/filterFormAdvanced';
 import { FilterFormSimple } from './enums/filterFormSimple';
 import { ProfileService } from '../profile/profile.service';
 import { GetProfileEntity } from '../profile/entity/get-profile.entity';
+import { FilterFormModelType } from './enums/filterFormModelType';
 
 @Injectable()
 export class FiltersService {
-  constructor(private readonly prismaService: PrismaService, private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly profileService: ProfileService,
+  ) {}
 
   async filterByMany(filters: FilterByManyDto[]): Promise<GetProfileEntity[]> {
     if (filters.length === 0) return [];
@@ -18,10 +22,10 @@ export class FiltersService {
     });
 
     filters.forEach(filter => {
-      if (filter.modelType in FilterFormAdvanced) {
+      if (Object.values(FilterFormAdvanced).includes(filter.modelType as unknown as FilterFormAdvanced)) {
         forms = forms.filter(form => form.models.some(model => filter.modelId === model.modelId));
       } else {
-        forms = this.filterForms(filter.modelId, forms, filter.modelType as FilterFormSimple);
+        forms = this.filterForms(filter.modelId, forms, filter.modelType);
       }
     });
 
@@ -32,7 +36,7 @@ export class FiltersService {
     );
   }
 
-  private filterForms(filter: string, forms: any, filterModelType: FilterFormSimple) {
+  private filterForms(filter: string, forms: any, filterModelType: FilterFormSimple | FilterFormModelType) {
     switch (filterModelType) {
       case FilterFormSimple.AGE:
         return forms.filter(

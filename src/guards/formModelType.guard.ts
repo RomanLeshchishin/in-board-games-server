@@ -1,7 +1,8 @@
-import { CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { FilterFormModelType } from '../filters/enums/filterFormModelType';
 
+@Injectable()
 export class FormModelTypeGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
@@ -13,9 +14,9 @@ export class FormModelTypeGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const requestBody = request.body;
+    const filters = request.body;
 
-    const hasModelType = requestBody.filters.every(filter => filter.modelType in formModelTypes);
+    const hasModelType = filters.every(filter => formModelTypes.includes(filter.modelType));
 
     if (!hasModelType) {
       throw new UnauthorizedException();
