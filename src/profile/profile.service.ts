@@ -17,7 +17,18 @@ export class ProfileService {
     await this.prismaService.profile.create({ data: { userId } });
   }
 
-  async findById(userId: string): Promise<GetProfileEntity> {
+  async findById(userId: string, profileId: string): Promise<GetProfileEntity> {
+    const profile = await this.prismaService.profile.findUnique({ where: { id: profileId } });
+    const user = await this.userService.findById(userId);
+    if (profile && user) {
+      const { id, ...userResponse } = user;
+      return { user: userResponse, profile };
+    } else {
+      throw new NotFoundException('user или profile не найдены');
+    }
+  }
+
+  async findByUserId(userId: string): Promise<GetProfileEntity> {
     const profile = await this.prismaService.profile.findUnique({ where: { userId } });
     const user = await this.userService.findById(userId);
     if (profile && user) {

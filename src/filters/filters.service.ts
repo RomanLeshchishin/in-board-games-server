@@ -3,12 +3,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { FilterByManyDto } from './dto/filter-by-many.dto';
 import { FilterFormAdvanced } from './enums/filterFormAdvanced';
 import { FilterFormSimple } from './enums/filterFormSimple';
+import { ProfileService } from '../profile/profile.service';
+import { GetProfileEntity } from '../profile/entity/get-profile.entity';
 
 @Injectable()
 export class FiltersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService, private readonly profileService: ProfileService) {}
 
-  async filterByMany(filters: FilterByManyDto[]) {
+  async filterByMany(filters: FilterByManyDto[]): Promise<GetProfileEntity[]> {
     if (filters.length === 0) return [];
 
     let forms = await this.prismaService.form.findMany({
@@ -23,7 +25,11 @@ export class FiltersService {
       }
     });
 
-    return forms;
+    return await Promise.all(
+      forms.map(async form => {
+        return await this.profileService.findById(form.userId, form.profileId);
+      }),
+    );
   }
 
   private filterForms(filter: string, forms: any, filterModelType: FilterFormSimple) {

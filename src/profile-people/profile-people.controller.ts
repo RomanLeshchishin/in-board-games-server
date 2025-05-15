@@ -23,7 +23,7 @@ export class ProfilePeopleController {
   @Post('saved')
   @ApiCreatedResponse({ type: ProfilePeopleEntity }) //не проверена ошибка throw new...
   async addSavedPeopleToProfile(@User('userId') userId: string, @Body() addDto: AddPeopleDto) {
-    const profile = await this.profileService.findById(userId);
+    const profile = await this.profileService.findByUserId(userId);
     if (profile) {
       return this.profilePeopleService.addPeople(addDto, PeopleStatus.SAVED, userId);
     }
@@ -34,7 +34,7 @@ export class ProfilePeopleController {
   @Post('friend')
   @ApiCreatedResponse({ type: ProfilePeopleEntity }) //не проверена ошибка throw new...
   async addFriendsToProfile(@User('userId') userId: string, @Body() addDto: AddPeopleDto) {
-    const profile = await this.profileService.findById(userId);
+    const profile = await this.profileService.findByUserId(userId);
     if (profile) {
       return this.profilePeopleService.addPeople(addDto, PeopleStatus.FRIEND, userId);
     }
