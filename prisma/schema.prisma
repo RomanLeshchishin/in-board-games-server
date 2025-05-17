@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -14,47 +9,42 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
-  email     String   @unique
+  id        String      @id @default(uuid()) @db.Uuid
+  email     String      @unique
+  role      Role        @default(USER)
+  firstName String      @map("first_name")
+  lastName  String      @map("last_name")
+  createdAt DateTime    @default(now()) @map("created_at")
   password  String
-  role      Role     @default(USER)
-  firstName String   @map("first_name")
-  lastName  String   @map("last_name")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  profile   Profile?
-  form      Form?
+  updatedAt DateTime    @updatedAt @map("updated_at")
   community Community[]
+  form      Form?
+  profile   Profile?
 
   @@map("users")
 }
 
 model Profile {
-  id     String  @id @default(uuid()) @db.Uuid
-  userId String  @unique @map("user_id") @db.Uuid
-  user   User    @relation(fields: [userId], references: [id])
-  avatar String? @unique @db.Uuid
-  age    Int?
-  about  String?
-  // subscriptions String[]
-  // savedEvents   String[]       @map("saved_events")
-
-  saverProfiles   ProfilePeople[] @relation("saverProfiles") // кто сохранил к себе профили
-  savedByProfiles ProfilePeople[] @relation("savedByProfiles") // тот кто был сохранён другими профилями
-  Form            Form[]
+  id              String          @id @default(uuid()) @db.Uuid
+  userId          String          @unique @map("user_id") @db.Uuid
+  avatar          String?         @unique @db.Uuid
+  about           String?
+  age             Int?
+  Form            Form?
+  user            User            @relation(fields: [userId], references: [id])
+  savedByProfiles ProfilePeople[] @relation("savedByProfiles")
+  saverProfiles   ProfilePeople[] @relation("saverProfiles")
 
   @@map("profiles")
 }
 
 model ProfilePeople {
   id          String       @id @default(uuid()) @db.Uuid
-  userId      String       @map("user_id") @db.Uuid
-  savedUserId String       @map("saved_user_id") @db.Uuid
   status      PeopleStatus
-
-  saver Profile @relation("saverProfiles", fields: [userId], references: [userId]) // профиль-инициатор сохранения других пользователей
-  saved Profile @relation("savedByProfiles", fields: [savedUserId], references: [userId]) // сохранённый профиль другими пользователями
+  savedUserId String       @map("saved_user_id") @db.Uuid
+  userId      String       @map("user_id") @db.Uuid
+  saved       Profile      @relation("savedByProfiles", fields: [savedUserId], references: [userId])
+  saver       Profile      @relation("saverProfiles", fields: [userId], references: [userId])
 
   @@unique([userId, savedUserId], name: "userIdSavedUserId")
   @@map("profiles-people")
@@ -63,23 +53,22 @@ model ProfilePeople {
 model Form {
   id           String       @id @default(uuid()) @db.Uuid
   userId       String       @unique @map("user_id") @db.Uuid
-  profileId    String       @unique @map("profile_id") @db.Uuid
-  birthday     DateTime
   gender       PeopleGender
   favoriteTime Json[]       @map("favorite_time")
-  patronymic   String?
-  phoneNumber  BigInt?      @map("phone_number")
   address      Json?
   institute    String?
   course       Int?
   direction    String?
   profession   String?
-  freezeAt     DateTime?    @map("freeze_at")
   blockedAt    DateTime?    @map("blocked_at")
-
-  user    User        @relation(fields: [userId], references: [id])
-  profile Profile     @relation(fields: [profileId], references: [id])
-  models  FormModel[] @relation("formModels")
+  freezeAt     DateTime?    @map("freeze_at")
+  birthday     DateTime
+  patronymic   String?
+  phoneNumber  BigInt?      @map("phone_number")
+  profileId    String       @unique @map("profile_id") @db.Uuid
+  profile      Profile      @relation(fields: [profileId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  models       FormModel[]  @relation("formModels")
 
   @@map("forms")
 }
@@ -89,8 +78,7 @@ model FormModel {
   userId    String        @map("user_id") @db.Uuid
   modelId   String        @map("model_id") @db.Uuid
   modelType FormModelType @map("model_type")
-
-  form Form @relation("formModels", fields: [userId], references: [userId])
+  form      Form          @relation("formModels", fields: [userId], references: [userId])
 
   @@unique([userId, modelId, modelType], name: "userIdModelIdType")
   @@map("forms-models")
@@ -107,9 +95,8 @@ model Community {
   blockedAt   DateTime? @map("blocked_at")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-
-  user   User    @relation(fields: [userId], references: [id])
-  events Event[]
+  user        User      @relation(fields: [userId], references: [id])
+  events      Event?
 
   @@map("communities")
 }
@@ -123,8 +110,7 @@ model Event {
   blockedAt   DateTime? @map("blocked_at")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-
-  community Community @relation(fields: [communityId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id])
 
   @@map("events")
 }
@@ -141,8 +127,7 @@ model Topic {
   id          String  @id @default(uuid()) @db.Uuid
   title       String
   description String?
-
-  games Game[]
+  games       Game[]
 
   @@map("topics")
 }
@@ -154,8 +139,7 @@ model Game {
   description        String?
   numberParticipants Int
   age                Int
-
-  topic Topic @relation(fields: [topicId], references: [id])
+  topic              Topic   @relation(fields: [topicId], references: [id])
 
   @@map("games")
 }
@@ -163,9 +147,9 @@ model Game {
 model File {
   id        String        @id @default(uuid()) @db.Uuid
   modelId   String        @map("model_id") @db.Uuid
-  modelType FileModelType @map("model_type")
   fileName  String        @map("file_name")
   fileLink  String        @map("file_link")
+  modelType FileModelType @map("model_type")
 
   @@map("files")
 }
@@ -188,11 +172,11 @@ enum PeopleGender {
 
 enum FileModelType {
   AVATAR
-  FORM // protect
+  FORM
   COMMUNITY
   EVENT
-  CHAT // protect
-  MESSAGE // protect
+  CHAT
+  MESSAGE
   FEEDBACK
 }
 
