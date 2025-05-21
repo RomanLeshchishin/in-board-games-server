@@ -97,8 +97,20 @@ model Community {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   user        User      @relation(fields: [userId], references: [id])
   events      Event?
+  communityTopics CommunityTopics[] @relation("communityTopics")
 
   @@map("communities")
+}
+
+model CommunityTopics {
+  id          String    @id @default(uuid()) @db.Uuid
+  communityId String    @map("community_id") @db.Uuid
+  topicId     String    @map("topic_id") @db.Uuid
+  community   Community @relation("communityTopics", fields: [communityId], references: [id])
+  topic       Topic     @relation("topicCommunities", fields: [topicId], references: [id])
+
+  @@unique([communityId, topicId], name: "communityIdTopicId")
+  @@map("communities-topics")
 }
 
 model Event {
@@ -128,6 +140,7 @@ model Topic {
   title       String
   description String?
   games       Game[]
+  communityTopics CommunityTopics[] @relation("topicCommunities")
 
   @@map("topics")
 }

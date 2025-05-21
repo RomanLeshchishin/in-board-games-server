@@ -15,6 +15,7 @@ import { FormModelsModule } from './form-models/form-models.module';
 import { CommunitiesModule } from './communities/communities.module';
 import { EventsModule } from './events/events.module';
 import { FiltersModule } from './filters/filters.module';
+import { CommunityTopicsModule } from './community-topics/community-topics.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { FiltersModule } from './filters/filters.module';
     CommunitiesModule,
     EventsModule,
     FiltersModule,
+    CommunityTopicsModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })

@@ -9,6 +9,10 @@ export class CommunitiesService {
     return this.prismaService.community.create({ data: dto });
   }
 
+  findById(id: string) {
+    return this.prismaService.community.findUnique({ where: { id, blockedAt: null }})
+  }
+
   findAll() {
     return this.prismaService.community.findMany();
   }

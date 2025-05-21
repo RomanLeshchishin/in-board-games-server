@@ -17,7 +17,7 @@ export class FormModelsController {
   constructor(private readonly formModelsService: FormModelsService) {}
 
   @Post()
-  @ApiCreatedResponse({ type: FormModelManyEntity }) //не проверена ошибка throw new...
+  @ApiCreatedResponse({ type: FormModelManyEntity })
   async createMany(@User('userId') userId: string, @Body() createManyFormModelsDto: FormModelManyDto) {
     return this.formModelsService.createMany(userId, createManyFormModelsDto);
   }
