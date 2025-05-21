@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CommunityTopicsService } from './community-topics.service';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '@prisma/client';
@@ -14,6 +14,11 @@ export class CommunityTopicsController {
   @Post()
   async createMany(@Body() createManyCommunityTopicsDto: CommunityTopicManyDto) {
     return this.communityTopicsService.createMany(createManyCommunityTopicsDto);
+  }
+
+  @Get('/id/:communityId')
+  async getByCommunityId(@Param('communityId') communityId: string) {
+    return this.communityTopicsService.findByCommunityId(communityId);
   }
 
   @Get()

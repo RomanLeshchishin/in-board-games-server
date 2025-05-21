@@ -38,6 +38,24 @@ export class CommunityTopicsService {
     return this.prismaService.communityTopics.findMany();
   }
 
+  async findByCommunityId(communityId: string): Promise<string[]> {
+    const communityTopics = await this.prismaService.communityTopics.findMany({ where: { communityId } });
+
+    if (communityTopics.length !== 0) {
+      return await Promise.all(
+        communityTopics.map(async communityTopic => {
+          const topic = await this.topicsService.findById(communityTopic.topicId);
+          if (topic) {
+            return topic.title;
+          }
+          return '';
+        }),
+      );
+    }
+
+    return [];
+  }
+
   delete(communityId: string, topicId: string) {
     return this.prismaService.communityTopics.delete({ where: { communityIdTopicId: { communityId, topicId } } });
   }
@@ -48,7 +66,7 @@ export class CommunityTopicsService {
   }
 
   private async createCommunityTopic(communityId: string, topicIds: string[]): Promise<string[]> {
-    if (topicIds && topicIds.length !== 0) {
+    if (topicIds.length !== 0) {
       return await Promise.all(
         topicIds.map(async topicId => {
           const topic = await this.topicsService.findById(topicId);
