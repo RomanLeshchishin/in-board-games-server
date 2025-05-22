@@ -72,7 +72,7 @@ export class FilesController {
     return this.filesService.findFilesByModelId(getAuthFilesDto);
   }
 
-  @Delete('/:id') //проверка на modelId
+  @Delete('/:id') //проверка на modelId..
   @UseGuards(AccessTokenGuard)
   deleteFileById(@Param('id') id: string) {
     return this.filesService.deleteFileById(id);
