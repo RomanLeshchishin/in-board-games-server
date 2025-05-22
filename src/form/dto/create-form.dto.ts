@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PeopleGender } from '@prisma/client';
+import { HowOften, PeopleGender, WhatDays } from '@prisma/client';
 
 export class CreateFormDto {
   @ApiProperty()
@@ -12,19 +12,22 @@ export class CreateFormDto {
   gender: PeopleGender;
 
   @ApiProperty()
+  whatDays: WhatDays;
+
+  @ApiProperty()
+  howOften: HowOften;
+
+  @ApiProperty()
   favoriteTime: any[];
 
   @ApiProperty()
   patronymic?: string;
 
   @ApiProperty()
-  phoneNumber?: bigint;
+  phoneNumber?: string;
 
   @ApiProperty()
   address?: any;
-
-  @ApiProperty()
-  about?: string;
 
   @ApiProperty()
   institute?: string;

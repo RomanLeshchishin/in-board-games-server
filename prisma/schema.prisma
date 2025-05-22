@@ -54,6 +54,8 @@ model Form {
   id           String       @id @default(uuid()) @db.Uuid
   userId       String       @unique @map("user_id") @db.Uuid
   gender       PeopleGender
+  whatDays     WhatDays     @map("what_days")
+  howOften     HowOften     @map("how_often")
   favoriteTime Json[]       @map("favorite_time")
   address      Json?
   institute    String?
@@ -64,7 +66,7 @@ model Form {
   freezeAt     DateTime?    @map("freeze_at")
   birthday     DateTime
   patronymic   String?
-  phoneNumber  BigInt?      @map("phone_number")
+  phoneNumber  Int?      @map("phone_number")
   profileId    String       @unique @map("profile_id") @db.Uuid
   profile      Profile      @relation(fields: [profileId], references: [id])
   user         User         @relation(fields: [userId], references: [id])
@@ -181,6 +183,19 @@ enum PeopleStatus {
 enum PeopleGender {
   MALE
   FEMALE
+}
+
+enum HowOften {
+  TWICE_A_WEEK
+  WEEKLY
+  TWICE_A_MONTH
+  MONTHLY
+}
+
+enum WhatDays {
+  WORKING
+  WEEKENDS
+  WORKING_WEEKENDS
 }
 
 enum FileModelType {
