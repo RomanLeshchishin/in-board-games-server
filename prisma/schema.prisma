@@ -66,7 +66,7 @@ model Form {
   freezeAt     DateTime?    @map("freeze_at")
   birthday     DateTime
   patronymic   String?
-  phoneNumber  Int?      @map("phone_number")
+  phoneNumber  String?      @map("phone_number")
   profileId    String       @unique @map("profile_id") @db.Uuid
   profile      Profile      @relation(fields: [profileId], references: [id])
   user         User         @relation(fields: [userId], references: [id])

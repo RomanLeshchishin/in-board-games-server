@@ -21,7 +21,7 @@ export class FormBasicEntity {
   patronymic: string | null;
 
   @ApiProperty()
-  phoneNumber: bigint | null;
+  phoneNumber: string | null;
 
   @ApiProperty()
   address: any | null;
