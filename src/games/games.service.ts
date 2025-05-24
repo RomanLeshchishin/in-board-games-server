@@ -24,7 +24,7 @@ export class GamesService {
       try {
         const [topicId, title, description, numberParticipants, age] = line.split(';').map(f => f.trim());
         await this.prismaService.game.create({
-          data: { topicId, title, description, numberParticipants: parseInt(numberParticipants), age: parseInt(age) },
+          data: { topicId, title, description, numberParticipants: numberParticipants, age: parseInt(age) },
         });
         savedGames++;
       } catch (error) {

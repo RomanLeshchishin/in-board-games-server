@@ -152,7 +152,7 @@ model Game {
   topicId            String  @map("topic_id") @db.Uuid
   title              String
   description        String?
-  numberParticipants Int
+  numberParticipants String
   age                Int
   topic              Topic   @relation(fields: [topicId], references: [id])
 

@@ -11,7 +11,7 @@ export class CreateGameDto {
   description?: string;
 
   @ApiProperty()
-  numberParticipants: number;
+  numberParticipants: string;
 
   @ApiProperty()
   age: number;

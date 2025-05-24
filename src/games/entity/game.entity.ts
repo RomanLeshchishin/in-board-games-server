@@ -14,7 +14,7 @@ export class GameEntity {
   description: string | null;
 
   @ApiProperty()
-  numberParticipants: number;
+  numberParticipants: string;
 
   @ApiProperty()
   age: number;
