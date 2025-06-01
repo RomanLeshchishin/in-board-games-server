@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MFile } from './MFile.class';
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 import EasyYandexS3 from 'easy-yandex-s3';
 import { ConfigService } from '@nestjs/config';
 import { UploadFilesDto } from './dto/upload-files.dto';
