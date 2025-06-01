@@ -16,6 +16,8 @@ import { CommunitiesModule } from './communities/communities.module';
 import { EventsModule } from './events/events.module';
 import { FiltersModule } from './filters/filters.module';
 import { CommunityTopicsModule } from './community-topics/community-topics.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { CommunityTopicsModule } from './community-topics/community-topics.modul
     EventsModule,
     FiltersModule,
     CommunityTopicsModule,
+    RecommendationsModule,
+    ChatModule,
   ],
   providers: [AccessTokenStrategy, RefreshTokenStrategy],
 })

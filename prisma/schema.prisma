@@ -9,17 +9,19 @@ datasource db {
 }
 
 model User {
-  id        String      @id @default(uuid()) @db.Uuid
-  email     String      @unique
-  role      Role        @default(USER)
-  firstName String      @map("first_name")
-  lastName  String      @map("last_name")
-  createdAt DateTime    @default(now()) @map("created_at")
-  password  String
-  updatedAt DateTime    @updatedAt @map("updated_at")
-  community Community[]
-  form      Form?
-  profile   Profile?
+  id              String            @id @default(uuid()) @db.Uuid
+  email           String            @unique
+  role            Role              @default(USER)
+  firstName       String            @map("first_name")
+  lastName        String            @map("last_name")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  password        String
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  community       Community[]
+  form            Form?
+  profile         Profile?
+  ChatParticipant ChatParticipant[]
+  Message         Message[]
 
   @@map("users")
 }
@@ -87,18 +89,18 @@ model FormModel {
 }
 
 model Community {
-  id          String    @id @default(uuid()) @db.Uuid
-  userId      String    @map("user_id") @db.Uuid
-  title       String
-  description String?
-  avatar      String?
-  priceList   Json?     @map("price_list")
-  shedule     Json?
-  blockedAt   DateTime? @map("blocked_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  user        User      @relation(fields: [userId], references: [id])
-  events      Event?
+  id              String            @id @default(uuid()) @db.Uuid
+  userId          String            @map("user_id") @db.Uuid
+  title           String
+  description     String?
+  avatar          String?
+  priceList       Json?             @map("price_list")
+  shedule         Json?
+  blockedAt       DateTime?         @map("blocked_at")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  user            User              @relation(fields: [userId], references: [id])
+  events          Event?
   communityTopics CommunityTopics[] @relation("communityTopics")
 
   @@map("communities")
@@ -138,10 +140,10 @@ model Interest {
 }
 
 model Topic {
-  id          String  @id @default(uuid()) @db.Uuid
-  title       String
-  description String?
-  games       Game[]
+  id              String            @id @default(uuid()) @db.Uuid
+  title           String
+  description     String?
+  games           Game[]
   communityTopics CommunityTopics[] @relation("topicCommunities")
 
   @@map("topics")
@@ -167,6 +169,43 @@ model File {
   modelType FileModelType @map("model_type")
 
   @@map("files")
+}
+
+model Chat {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String?
+  isGroup   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  participants ChatParticipant[]
+  messages     Message[]
+}
+
+model ChatParticipant {
+  id       String   @id @default(uuid()) @db.Uuid
+  chatId   String   @db.Uuid
+  userId   String   @db.Uuid
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  chat Chat @relation(fields: [chatId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([chatId, userId])
+}
+
+model Message {
+  id        String   @id @default(uuid()) @db.Uuid
+  chatId    String   @db.Uuid
+  senderId  String   @db.Uuid
+  content   String?
+  fileId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  chat   Chat @relation(fields: [chatId], references: [id])
+  sender User @relation(fields: [senderId], references: [id])
+
+  @@index([chatId, createdAt])
 }
 
 enum Role {
