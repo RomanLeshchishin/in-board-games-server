@@ -21,23 +21,26 @@ export class AuthController {
   registerUser(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.register(registerDto, Role.USER, res);
   }
+
   @Post('register/manager')
   @ApiCreatedResponse({ type: AuthEntity })
   registerManager(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.register(registerDto, Role.MANAGER, res);
   }
+
   @Post('register/admin')
   @UseGuards(AdminRegisterGuard)
   @ApiCreatedResponse({ type: AuthEntity })
   registerAdmin(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.register(registerDto, Role.ADMIN, res);
   }
+
   @Post('login')
-  @UseGuards(AccessTokenGuard)
   @ApiCreatedResponse({ type: AuthEntity })
   login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.login(loginDto, res);
   }
+
   @Post('refresh')
   @UseGuards(RefreshTokenGuard)
   refreshToken(@Cookies('refreshToken') refreshToken: string, @Res({ passthrough: true }) res: Response) {
@@ -46,6 +49,7 @@ export class AuthController {
     }
     return this.authService.refreshAccessToken(refreshToken, res);
   }
+
   @Post('logout')
   @UseGuards(AccessTokenGuard)
   logOut(@Res() res: Response) {
