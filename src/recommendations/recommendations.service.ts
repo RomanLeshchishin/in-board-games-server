@@ -54,15 +54,15 @@ export class RecommendationsService {
 
     const weights = {
       gender: 5,
-      whatDays: 10,
-      howOften: 10,
-      favoriteTime: 15,
+      whatDays: 5,
+      howOften: 5,
+      favoriteTime: 5,
       course: 5,
       direction: 5,
       profession: 5,
       interests: 10,
-      topics: 15,
-      games: 20,
+      topics: 25,
+      games: 30,
     };
 
     if (formA.gender === formB.gender) total += weights.gender;
