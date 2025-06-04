@@ -43,7 +43,7 @@ export class RecommendationsService {
       };
     });
 
-    return recommendations.filter(r => r.compatibility >= 65).sort((a, b) => b.compatibility - a.compatibility);
+    return recommendations.filter(r => r.compatibility >= 25).sort((a, b) => b.compatibility - a.compatibility);
   }
 
   calculateCompatibility(formA: FormWithModels, formB: FormWithModels): number {
