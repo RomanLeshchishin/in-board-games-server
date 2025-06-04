@@ -36,7 +36,7 @@ export class FilesController {
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FilesInterceptor('files'))
   @ApiConsumes('multipart/form-data')
-  @ApiCreatedResponse({ type: UploadFilesEntity }) //проверка на modelId
+  @ApiCreatedResponse({ type: UploadFilesEntity })
   async uploadFiles(@UploadedFiles() files: Express.Multer.File[], @Body() uploadFilesDto: UploadFilesDto, @Req() reg) {
     const newFiles = await this.filesService.filterFiles(files);
     return this.filesService.saveFiles(newFiles, uploadFilesDto, reg);

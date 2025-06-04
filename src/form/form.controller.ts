@@ -47,7 +47,7 @@ export class FormController {
     return this.formService.findById(userId);
   }
 
-  @Get('/id/interests')
+  @Get('/id/interests/:userId')
   getFormInterests(@Param('userId') userId: string) {
     return this.formService.findFormInterestsById(userId);
   }
