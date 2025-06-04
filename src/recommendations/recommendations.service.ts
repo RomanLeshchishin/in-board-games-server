@@ -11,6 +11,8 @@ export class RecommendationsService {
   constructor(private prismaService: PrismaService) {}
 
   async getRecommendations(userId: string) {
+    const user = await this.prismaService.user.findUnique({ where: { id: userId } });
+
     const userForm = await this.prismaService.form.findUnique({
       where: { userId },
       include: {
@@ -38,6 +40,7 @@ export class RecommendationsService {
     const recommendations = allForms.map(form => {
       const score = this.calculateCompatibility(userForm, form);
       return {
+        user,
         profile: form.profile,
         compatibility: score,
       };
@@ -55,11 +58,11 @@ export class RecommendationsService {
       howOften: 10,
       favoriteTime: 15,
       course: 5,
-      direction: 10,
-      profession: 10,
-      interests: 15,
-      topics: 10,
-      games: 10,
+      direction: 5,
+      profession: 5,
+      interests: 10,
+      topics: 15,
+      games: 20,
     };
 
     if (formA.gender === formB.gender) total += weights.gender;
